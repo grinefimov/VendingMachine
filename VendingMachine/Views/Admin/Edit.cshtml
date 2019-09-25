@@ -24,8 +24,11 @@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <span>Change </span><label asp-for="ImageUrl"></label>
-                <input type="file" name="file"/>
+                <span>Change </span><label asp-for="ImageUrl"></label><br />
+                <div class="custom-file">
+                    <input type="file" name="file" class="custom-file-input" id="customFile" />
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                </div>
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -43,6 +46,12 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script>
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+    });
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
