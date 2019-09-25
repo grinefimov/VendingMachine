@@ -9,21 +9,16 @@ using VendingMachine.Models;
 
 namespace VendingMachine.Controllers
 {
-    public class HomeController : Controller
+    public class ClientController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<ClientController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public ClientController(ILogger<ClientController> logger)
         {
             _logger = logger;
         }
 
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }
