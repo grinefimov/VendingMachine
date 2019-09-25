@@ -10,28 +10,34 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
+                <label asp-for="Price"></label>
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
+            @*// Change form in Edit.cshtml too*@
+            @*<div class="form-group">
+                <label asp-for="ImageUrl"></label><br />
                 <div class="custom-file">
-                    <input asp-for="ImageUrl" type="file" class="custom-file-input" />
+                    <input type="file" name="file" class="custom-file-input" id="customFile" />
                     <label class="custom-file-label" for="customFile">Choose file</label>
                 </div>
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="ImageUrl"></label><br />
+                <input type="file" name="file" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
+                <label asp-for="Quantity"></label>
                 <input asp-for="Quantity" class="form-control" />
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>

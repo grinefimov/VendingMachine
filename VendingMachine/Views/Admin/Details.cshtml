@@ -9,6 +9,7 @@
 <div>
     <h4>Product</h4>
     <hr />
+    <img src="@Model.ImageUrl" asp-append-version="true" alt="@Model.ImageUrl" class="img-thumbnail mb-2" width="250"/>
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)

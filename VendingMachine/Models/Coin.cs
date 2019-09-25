@@ -7,16 +7,13 @@ using System.Threading.Tasks;
 
 namespace VendingMachine.Models
 {
-    public class Product
+    public class Coin
     {
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
-        [Required]
-        public float Price { get; set; }
+        public float FaceValue { get; set; }
         [Required]
         public int Quantity { get; set; }
-        [DisplayName("Image")]
-        public string ImageUrl { get; set; }
+        public bool IsBlocked { get; set; } = false;
     }
 }
