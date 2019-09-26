@@ -34,23 +34,28 @@ namespace VendingMachine.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(AdminModel model, List<IFormFile> files)
         {
-            for (int i = 0; i < files.Count; i++)
+            var fileNumber = 0;
+            foreach (var product in model.Products)
             {
-                if (files[i] != null)
+                if (product.ImageUrl == "Changed")
                 {
-                    var deletePath = Path.Combine("", _hostingEnvironment.ContentRootPath + @"/wwwroot/" + model.Products[i].ImageUrl);
-                    if (System.IO.File.Exists(deletePath))
+                    if (files[fileNumber] != null)
                     {
-                        System.IO.File.Delete(deletePath);
+                        var deletePath = Path.Combine("", _hostingEnvironment.ContentRootPath + @"/wwwroot/" + product.ImageUrl);
+                        if (System.IO.File.Exists(deletePath))
+                        {
+                            System.IO.File.Delete(deletePath);
+                        }
+                        var fileInfo = new FileInfo(files[fileNumber].FileName);
+                        var newFilename = product.Name + fileInfo.Extension;
+                        var path = Path.Combine("", _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
+                        await using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await files[fileNumber].CopyToAsync(stream);
+                        }
+                        product.ImageUrl = @"/images/" + newFilename;
+                        fileNumber++;
                     }
-                    var fileInfo = new FileInfo(files[i].FileName);
-                    var newFilename = model.Products[i].Name + fileInfo.Extension;
-                    var path = Path.Combine("", _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
-                    await using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await files[i].CopyToAsync(stream);
-                    }
-                    model.Products[i].ImageUrl = @"/images/" + newFilename;
                 }
             }
 

@@ -34,13 +34,12 @@
                 </tr>
             </thead>
             <tbody>
-                @for(int i = 0; i < Model.Products.Count; i++ )
+                @for (int i = 0; i < Model.Products.Count; i++)
                 {
                     <tr>
                         <td>
                             <img src="@Model.Products[i].ImageUrl" asp-append-version="true" alt="@Model.Products[i].ImageUrl" class="img-thumbnail" width="110" />
                             <input type="hidden" asp-for="@Model.Products[i].Id" />
-                            <input type="hidden" asp-for="@Model.Products[i].ImageUrl" />
                         </td>
                         <td>
                             <div class="form-group">
@@ -87,52 +86,16 @@
 <script>
     $(document).ready(function () {
         bsCustomFileInput.init();
+
+        var fileInputs = document.getElementsByName("files");
+        for (let i = 0; i < fileInputs.length; i++) {
+            fileInputs[i].addEventListener("change", (event) => {
+                fileInputs[i].parentNode.parentNode.children[0].value = "Changed";
+            });
+        }
     });
 </script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-
-@*@foreach (var item in Model)
-{
-    <tr>
-        <td>
-            <img src="@item.ImageUrl" asp-append-version="true" alt="@item.ImageUrl" class="img-thumbnail" width="100" />
-            <input type="hidden" asp-for="@item.Id" />
-            <input type="hidden" asp-for="@item.ImageUrl" />
-        </td>
-        <td>
-            <div class="form-group">
-                <input asp-for="@item.Name" class="form-control" />
-                <span asp-validation-for="@item.Name" class="text-danger"></span>
-            </div>
-        </td>
-        <td>
-            <div class="form-group">
-                <input asp-for="@item.Price" class="form-control" />
-                <span asp-validation-for="@item.Price" class="text-danger"></span>
-            </div>
-        </td>
-        <td>
-            <div class="form-group mb-2">
-                <div class="custom-file">
-                    <input type="file" name="file" class="custom-file-input" id="customFile" />
-                    <label class="custom-file-label" for="customFile">Choose file</label>
-                </div>
-            </div>
-            @Html.DisplayFor(modelItem => item.ImageUrl)
-
-        </td>
-        <td>
-            <div class="form-group">
-                <input asp-for="@item.Quantity" class="form-control" />
-                <span asp-validation-for="@item.Quantity" class="text-danger"></span>
-            </div>
-        </td>
-        <td>
-            <a asp-action="Edit" asp-route-id="@item.Id" class="mr-1">Edit</a>
-            <a asp-action="Delete" asp-route-id="@item.Id" class="mr-1">Delete</a>
-        </td>
-    </tr>
-}*@
