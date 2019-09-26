@@ -26,25 +26,59 @@ namespace VendingMachine.Controllers
         // GET: Admin
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+            var model = new AdminModel(await _context.Products.ToListAsync());
+
+            return View(model);
         }
 
-        // GET: Admin/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpPost]
+        public async Task<IActionResult> Index(AdminModel model, List<IFormFile> files)
         {
-            if (id == null)
+            for (int i = 0; i < files.Count; i++)
             {
-                return NotFound();
+                if (files[i] != null)
+                {
+                    var deletePath = Path.Combine("", _hostingEnvironment.ContentRootPath + @"/wwwroot/" + model.Products[i].ImageUrl);
+                    if (System.IO.File.Exists(deletePath))
+                    {
+                        System.IO.File.Delete(deletePath);
+                    }
+                    var fileInfo = new FileInfo(files[i].FileName);
+                    var newFilename = model.Products[i].Name + fileInfo.Extension;
+                    var path = Path.Combine("", _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
+                    await using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await files[i].CopyToAsync(stream);
+                    }
+                    model.Products[i].ImageUrl = @"/images/" + newFilename;
+                }
             }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
+            foreach (var product in model.Products)
             {
-                return NotFound();
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        _context.Update(product);
+                        await _context.SaveChangesAsync();
+
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ProductExists(product.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
             }
 
-            return View(product);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Admin/Create

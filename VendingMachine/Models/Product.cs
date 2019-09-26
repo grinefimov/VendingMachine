@@ -16,6 +16,7 @@ namespace VendingMachine.Models
         public float Price { get; set; }
         [Required]
         public int Quantity { get; set; }
+        [Required]
         [DisplayName("Image")]
         public string ImageUrl { get; set; }
     }
