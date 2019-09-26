@@ -102,7 +102,7 @@ namespace VendingMachine.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Quantity")] Product product, IFormFile file)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,ImageUrl,Quantity")] Product product, IFormFile file)
         {
             if (id != product.Id)
             {
@@ -111,8 +111,7 @@ namespace VendingMachine.Controllers
 
             if (file != null)
             {
-                var oldProduct = await _context.Products.FindAsync(id);
-                var deletePath = Path.Combine("", _hostingEnvironment.ContentRootPath + @"/wwwroot/" + oldProduct.ImageUrl);
+                var deletePath = Path.Combine("", _hostingEnvironment.ContentRootPath + @"/wwwroot/" + product.ImageUrl);
                 if (System.IO.File.Exists(deletePath))
                 {
                     System.IO.File.Delete(deletePath);
