@@ -32,7 +32,7 @@ namespace VendingMachine.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(AdminModel model, List<IFormFile> files)
+        public async Task<IActionResult> SaveProducts(AdminModel model, List<IFormFile> files)
         {
             var fileNumber = 0;
             foreach (var product in model.Products)
@@ -86,38 +86,34 @@ namespace VendingMachine.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Admin/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         // POST: Admin/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price,Quantity")] Product product, IFormFile file)
+        public async Task<IActionResult> AddProduct(AdminModel model, IFormFile file)
         {
             if (file != null)
             {
                 var fileInfo = new FileInfo(file.FileName);
-                var newFilename = product.Name + fileInfo.Extension;
+                var newFilename = model.NewProduct.Name + fileInfo.Extension;
                 var path = Path.Combine("", _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
                 await using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
-                product.ImageUrl = @"/images/" + newFilename;
+                model.NewProduct.ImageUrl = @"/images/" + newFilename;
             }
 
-            if (ModelState.IsValid)
+            if (true)
             {
-                _context.Add(product);
+                _context.Add(model.NewProduct);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+
             }
-            return View(product);
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Admin/Edit/5

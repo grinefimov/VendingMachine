@@ -8,7 +8,8 @@ namespace VendingMachine.Models
 {
     public class AdminModel
     {
-        public List<VendingMachine.Models.Product> Products { get; set; }
+        public Product NewProduct { get; set; }
+        public List<Product> Products { get; set; }
 
         public AdminModel(List<VendingMachine.Models.Product> products)
         {
