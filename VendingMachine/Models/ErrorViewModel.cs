@@ -1,5 +1,3 @@
-using System;
-
 namespace VendingMachine.Models
 {
     public class ErrorViewModel

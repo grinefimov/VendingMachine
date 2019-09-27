@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace VendingMachine.Models
 {
-    public class Coin
+    public class Cash
     {
         public int Id { get; set; }
         [Required]
+        [DisplayName("Face Value")]
         public float FaceValue { get; set; }
-        [Required]
-        public int Quantity { get; set; }
+
+        public int Quantity { get; set; } = 0;
+        [DisplayName("Blocked")]
         public bool IsBlocked { get; set; } = false;
     }
 }

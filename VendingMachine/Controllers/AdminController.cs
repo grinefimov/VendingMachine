@@ -14,25 +14,30 @@ namespace VendingMachine.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly ProductContext _context;
+        private readonly ProductContext _productContext;
+        private readonly CashContext _cashContext;
         private readonly IHostEnvironment _hostingEnvironment;
 
-        public AdminController(ProductContext context, IHostEnvironment env)
+        public AdminController(ProductContext productContext, CashContext cashContext, IHostEnvironment env)
         {
-            _context = context;
+            _productContext = productContext;
+            _cashContext = cashContext;
             _hostingEnvironment = env;
         }
 
         // GET: Admin
         public async Task<IActionResult> Index()
         {
-            var model = new AdminModel(await _context.Products.ToListAsync());
+            var model = new AdminModel(
+                await _productContext.Products.ToListAsync(),
+                await _cashContext.Cashes.ToListAsync()
+            );
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveProducts(AdminModel model, List<IFormFile> files)
+        public async Task<IActionResult> SaveData(AdminModel model, List<IFormFile> files)
         {
             var fileNumber = 0;
             foreach (var product in model.Products)
@@ -41,37 +46,60 @@ namespace VendingMachine.Controllers
                 {
                     if (files[fileNumber] != null)
                     {
-                        var deletePath = Path.Combine("", _hostingEnvironment.ContentRootPath + @"/wwwroot/" + product.ImageUrl);
+                        var deletePath = Path.Combine("",
+                            _hostingEnvironment.ContentRootPath + @"/wwwroot/" + product.ImageUrl);
                         if (System.IO.File.Exists(deletePath))
                         {
                             System.IO.File.Delete(deletePath);
                         }
+
                         var fileInfo = new FileInfo(files[fileNumber].FileName);
                         var newFilename = product.Name + fileInfo.Extension;
-                        var path = Path.Combine("", _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
+                        var path = Path.Combine("",
+                            _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
                         await using (var stream = new FileStream(path, FileMode.Create))
                         {
                             await files[fileNumber].CopyToAsync(stream);
                         }
+
                         product.ImageUrl = @"/images/" + newFilename;
                         fileNumber++;
                     }
                 }
             }
 
-            foreach (var product in model.Products)
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                foreach (var product in model.Products)
                 {
                     try
                     {
-                        _context.Update(product);
-                        await _context.SaveChangesAsync();
-
+                        _productContext.Update(product);
+                        await _productContext.SaveChangesAsync();
                     }
                     catch (DbUpdateConcurrencyException)
                     {
                         if (!ProductExists(product.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+
+                foreach (var cash in model.Cashes)
+                {
+                    try
+                    {
+                        _cashContext.Update(cash);
+                        await _cashContext.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ProductExists(cash.Id))
                         {
                             return NotFound();
                         }
@@ -102,11 +130,12 @@ namespace VendingMachine.Controllers
                 {
                     await file.CopyToAsync(stream);
                 }
+
                 model.NewProduct.ImageUrl = @"/images/" + newFilename;
             }
 
-            _context.Add(model.NewProduct);
-            await _context.SaveChangesAsync();
+            _productContext.Add(model.NewProduct);
+            await _productContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -118,7 +147,7 @@ namespace VendingMachine.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
+            var product = await _productContext.Products
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
@@ -133,20 +162,21 @@ namespace VendingMachine.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
+            var product = await _productContext.Products.FindAsync(id);
+            _productContext.Products.Remove(product);
+            await _productContext.SaveChangesAsync();
             var path = Path.Combine("", _hostingEnvironment.ContentRootPath + @"/wwwroot/" + product.ImageUrl);
             if (System.IO.File.Exists(path))
             {
                 System.IO.File.Delete(path);
             }
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProductExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return _productContext.Products.Any(e => e.Id == id);
         }
     }
 }

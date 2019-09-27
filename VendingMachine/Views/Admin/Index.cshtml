@@ -6,11 +6,38 @@
 
 <h1 class="text-center mb-3">Administrator panel</h1>
 
-<h2>Products</h2>
-<div class="table-responsive mb-3">
-    <form asp-action="SaveProducts" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <table class="table">
+<form asp-action="SaveData" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <h3>Cash</h3>
+    <div class="row mb-2">
+        @for (int i = 0; i < Model.Cashes.Count; i++)
+        {
+            <div class="col p-1">
+                <div class="card">
+                    <div class="card-body p-2">
+                        <input type="hidden" asp-for="@Model.Cashes[i].Id" />
+                        <input type="hidden" asp-for="@Model.Cashes[i].FaceValue" />
+                        <label asp-for="@Model.Cashes[i].FaceValue"></label>: @Model.Cashes[i].FaceValue
+                        <div class="form-group mb-2">
+                            <label asp-for="@Model.Cashes[i].Quantity"></label>
+                            <input asp-for="@Model.Cashes[i].Quantity" class="form-control" />
+                            <span asp-validation-for="@Model.Cashes[i].Quantity" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-0">
+                            <input type="checkbox" asp-for="@Model.Cashes[i].IsBlocked" style="min-width: 25px" />
+                            <label asp-for="@Model.Cashes[i].IsBlocked"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <h3>Products</h3>
+    <div class="table-responsive mb-2">
+
+        <table class="table mb-2">
             <thead>
                 <tr>
                     <th>
@@ -76,11 +103,11 @@
                 }
             </tbody>
         </table>
-        <div class="form-group">
+        <div class="form-group text-center">
             <input type="submit" value="Save" class="btn btn-primary btn-lg px-5" />
         </div>
-    </form>
-</div>
+    </div>
+</form>
 
 @for (int i = 0; i < Model.Products.Count; i++)
 {
@@ -98,9 +125,9 @@
                 </div>
                 <div class="modal-footer">
                     <form asp-action="DeleteProduct">
-                        <input type="hidden" name="id" value="@(Model.Products[i].Id)" />
+                        <input type="hidden" name="id" value="@(Model.Products[i].Id)"/>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <input type="submit" value="Delete" class="btn btn-danger" />
+                        <input type="submit" value="Delete" class="btn btn-danger"/>
                     </form>
                 </div>
             </div>
@@ -110,47 +137,46 @@
 
 @*@await Html.PartialAsync("_AddProductPartial")*@
 
-<div class="row mb-3">
+<div class="row justify-content-center">
     <div class="col-md-4">
-        <h2>Add product</h2>
+        <h3>Add product</h3>
         <form asp-action="AddProduct" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="@Model.NewProduct.Name"></label>
-                <input asp-for="@Model.NewProduct.Name" placeholder="@nameof(Product.Name)" class="form-control" />
+                <input asp-for="@Model.NewProduct.Name" placeholder="@nameof(Product.Name)" class="form-control"/>
                 <span asp-validation-for="@Model.NewProduct.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@Model.NewProduct.Price"></label>
-                <input asp-for="@Model.NewProduct.Price" placeholder="@nameof(Product.Price)" class="form-control" />
+                <input asp-for="@Model.NewProduct.Price" placeholder="@nameof(Product.Price)" class="form-control"/>
                 <span asp-validation-for="@Model.NewProduct.Price" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@Model.NewProduct.ImageUrl"></label>
                 <div class="custom-file">
-                    <input type="file" name="file" class="custom-file-input" id="newCustomFile" required />
+                    <input type="file" name="file" class="custom-file-input" id="newCustomFile" required/>
                     <label class="custom-file-label" for="newCustomFile">Choose file</label>
                 </div>
                 <span id="fileValidationText" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@Model.NewProduct.Quantity"></label>
-                <input asp-for="@Model.NewProduct.Quantity" placeholder="@nameof(Product.Quantity)" class="form-control" />
+                <input asp-for="@Model.NewProduct.Quantity" placeholder="@nameof(Product.Quantity)" class="form-control"/>
                 <span asp-validation-for="@Model.NewProduct.Quantity" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Add" id="submitButton" class="btn btn-primary btn-lg px-5" />
+            <div class="form-group text-center">
+                <input type="submit" value="Add" id="submitButton" class="btn btn-primary btn-lg px-5"/>
             </div>
         </form>
     </div>
 </div>
 
 
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             bsCustomFileInput.init();
 
             var fileInputs = document.getElementsByName("files");
