@@ -139,7 +139,7 @@
     </div>
 }
 
-@await Html.PartialAsync("_AddProductPartial", new Product());
+@await Html.PartialAsync("_AddProductPartial", new Product())
 
 
 @section Scripts {
@@ -148,7 +148,7 @@
         $(document).ready(function() {
             bsCustomFileInput.init();
 
-            var fileInputs = document.getElementsByName("files");
+            let fileInputs = document.getElementsByName("files");
             for (let i = 0; i < fileInputs.length; i++) {
                 fileInputs[i].addEventListener("change",
                     (event) => {
@@ -158,7 +158,7 @@
 
             document.getElementById("submitButton").addEventListener("click", validateFileInput);
 
-            var fileInput = document.getElementById("newCustomFile");
+            let fileInput = document.getElementById("newCustomFile");
             fileInput.addEventListener('change',
                 (event) => {
                     document.getElementById("fileValidationText").innerText = "";
