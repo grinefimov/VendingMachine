@@ -1,4 +1,4 @@
-﻿@model VendingMachine.Models.AdminModel
+﻿@model VendingMachine.Models.VendingMachineModel
 
 @{
     ViewData["Title"] = "Administrator panel";
@@ -20,16 +20,16 @@
             <div class="col p-1">
                 <div class="card">
                     <div class="card-body p-2">
-                        <input type="hidden" asp-for="@Model.Cashes[i].Id" />
-                        <input type="hidden" asp-for="@Model.Cashes[i].FaceValue" />
+                        <input type="hidden" asp-for="@Model.Cashes[i].Id"/>
+                        <input type="hidden" asp-for="@Model.Cashes[i].FaceValue"/>
                         <label asp-for="@Model.Cashes[i].FaceValue"></label>: @Model.Cashes[i].FaceValue
                         <div class="form-group mb-2">
                             <label asp-for="@Model.Cashes[i].Quantity"></label>
-                            <input asp-for="@Model.Cashes[i].Quantity" class="form-control" />
+                            <input asp-for="@Model.Cashes[i].Quantity" class="form-control"/>
                             <span asp-validation-for="@Model.Cashes[i].Quantity" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-0">
-                            <input type="checkbox" asp-for="@Model.Cashes[i].IsBlocked" style="min-width: 25px" />
+                            <input type="checkbox" asp-for="@Model.Cashes[i].IsBlocked" style="min-width: 25px"/>
                             <label asp-for="@Model.Cashes[i].IsBlocked"></label>
                         </div>
                     </div>
@@ -43,72 +43,72 @@
 
         <table class="table mb-2">
             <thead>
-                <tr>
-                    <th>
-                        Image
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Products[0].Name)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Products[0].Price)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Products[0].ImageUrl)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Products[0].Quantity)
-                    </th>
-                    <th></th>
-                </tr>
+            <tr>
+                <th>
+                    Image
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Products[0].Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Products[0].Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Products[0].ImageUrl)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Products[0].Quantity)
+                </th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
-                @for (int i = 0; i < Model.Products.Count; i++)
-                {
-                    <tr>
-                        <td>
-                            <img src="@Model.Products[i].ImageUrl" asp-append-version="true" alt="@Model.Products[i].ImageUrl" class="img-thumbnail" width="110" />
-                            <input type="hidden" asp-for="@Model.Products[i].Id" />
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input asp-for="@Model.Products[i].Name" class="form-control" />
-                                <span asp-validation-for="@Model.Products[i].Name" class="text-danger"></span>
+            @for (int i = 0; i < Model.Products.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <img src="@Model.Products[i].ImageUrl" asp-append-version="true" alt="@Model.Products[i].ImageUrl" class="img-thumbnail" width="110"/>
+                        <input type="hidden" asp-for="@Model.Products[i].Id"/>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input asp-for="@Model.Products[i].Name" class="form-control"/>
+                            <span asp-validation-for="@Model.Products[i].Name" class="text-danger"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input asp-for="@Model.Products[i].Price" class="form-control"/>
+                            <span asp-validation-for="@Model.Products[i].Price" class="text-danger"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input asp-for="@Model.Products[i].ImageUrl" class="form-control"/>
+                            <span asp-validation-for="@Model.Products[i].ImageUrl" class="text-danger"></span>
+                            <div class="custom-file mt-1">
+                                <input type="file" name="files" class="custom-file-input" id="customFile"/>
+                                <label class="custom-file-label" for="customFile">Choose file</label>
                             </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input asp-for="@Model.Products[i].Price" class="form-control" />
-                                <span asp-validation-for="@Model.Products[i].Price" class="text-danger"></span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input asp-for="@Model.Products[i].ImageUrl" class="form-control" />
-                                <span asp-validation-for="@Model.Products[i].ImageUrl" class="text-danger"></span>
-                                <div class="custom-file mt-1">
-                                    <input type="file" name="files" class="custom-file-input" id="customFile" />
-                                    <label class="custom-file-label" for="customFile">Choose file</label>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input asp-for="@Model.Products[i].Quantity" class="form-control" />
-                                <span asp-validation-for="@Model.Products[i].Quantity" class="text-danger"></span>
-                            </div>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal@(i)">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                }
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                            <input asp-for="@Model.Products[i].Quantity" class="form-control"/>
+                            <span asp-validation-for="@Model.Products[i].Quantity" class="text-danger"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal@(i)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
         <div class="form-group text-center">
-            <input type="submit" value="Save" class="btn btn-primary btn-lg px-5" />
+            <input type="submit" value="Save" class="btn btn-primary btn-lg px-5"/>
         </div>
     </div>
 </form>
@@ -139,42 +139,7 @@
     </div>
 }
 
-@*@await Html.PartialAsync("_AddProductPartial")*@
-
-<div class="row justify-content-center">
-    <div class="col-md-4">
-        <h3>Add product</h3>
-        <form asp-action="AddProduct" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="@Model.NewProduct.Name"></label>
-                <input asp-for="@Model.NewProduct.Name" placeholder="@nameof(Product.Name)" class="form-control"/>
-                <span asp-validation-for="@Model.NewProduct.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="@Model.NewProduct.Price"></label>
-                <input asp-for="@Model.NewProduct.Price" placeholder="@nameof(Product.Price)" class="form-control"/>
-                <span asp-validation-for="@Model.NewProduct.Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="@Model.NewProduct.ImageUrl"></label>
-                <div class="custom-file">
-                    <input type="file" name="file" class="custom-file-input" id="newCustomFile" required/>
-                    <label class="custom-file-label" for="newCustomFile">Choose file</label>
-                </div>
-                <span id="fileValidationText" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="@Model.NewProduct.Quantity"></label>
-                <input asp-for="@Model.NewProduct.Quantity" placeholder="@nameof(Product.Quantity)" class="form-control"/>
-                <span asp-validation-for="@Model.NewProduct.Quantity" class="text-danger"></span>
-            </div>
-            <div class="form-group text-center">
-                <input type="submit" value="Add" id="submitButton" class="btn btn-primary btn-lg px-5"/>
-            </div>
-        </form>
-    </div>
-</div>
+@await Html.PartialAsync("_AddProductPartial", new Product());
 
 
 @section Scripts {

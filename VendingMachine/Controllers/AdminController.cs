@@ -30,7 +30,7 @@ namespace VendingMachine.Controllers
         {
             if (key == _secretKey)
             {
-                var model = new AdminModel()
+                var model = new VendingMachineModel()
                 {
                     Products = await _productContext.Products.ToListAsync(),
                     Cashes = await _cashContext.Cashes.ToListAsync()
@@ -43,7 +43,7 @@ namespace VendingMachine.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveData(AdminModel model, List<IFormFile> files)
+        public async Task<IActionResult> SaveData(VendingMachineModel model, List<IFormFile> files)
         {
             var fileNumber = 0;
             foreach (var product in model.Products)
@@ -122,22 +122,22 @@ namespace VendingMachine.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddProduct(AdminModel model, IFormFile file)
+        public async Task<IActionResult> AddProduct(Product model, IFormFile file)
         {
             if (file != null)
             {
                 var fileInfo = new FileInfo(file.FileName);
-                var newFilename = model.NewProduct.Name + fileInfo.Extension;
+                var newFilename = model.Name + fileInfo.Extension;
                 var path = Path.Combine("", _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
                 await using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
 
-                model.NewProduct.ImageUrl = @"/images/" + newFilename;
+                model.ImageUrl = @"/images/" + newFilename;
             }
 
-            _productContext.Add(model.NewProduct);
+            _productContext.Add(model);
             await _productContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(Panel), new { key = _secretKey });
