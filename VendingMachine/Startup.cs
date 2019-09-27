@@ -52,7 +52,7 @@ namespace VendingMachine
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Admin}/{action=Index}");
+                    pattern: "{controller=Client}/{action=Index}/{key?}");
             });
         }
     }

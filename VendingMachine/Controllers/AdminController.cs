@@ -25,15 +25,19 @@ namespace VendingMachine.Controllers
             _hostingEnvironment = env;
         }
 
-        // GET: Admin
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Panel(string key)
         {
-            var model = new AdminModel(
-                await _productContext.Products.ToListAsync(),
-                await _cashContext.Cashes.ToListAsync()
-            );
+            if (key == "SecretKey")
+            {
+                var model = new AdminModel(
+                    await _productContext.Products.ToListAsync(),
+                    await _cashContext.Cashes.ToListAsync()
+                );
 
-            return View(model);
+                return View(model);
+            }
+
+            return NotFound();
         }
 
         [HttpPost]
@@ -111,12 +115,9 @@ namespace VendingMachine.Controllers
                 }
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Panel));
         }
 
-        // POST: Admin/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProduct(AdminModel model, IFormFile file)
@@ -136,28 +137,9 @@ namespace VendingMachine.Controllers
 
             _productContext.Add(model.NewProduct);
             await _productContext.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Panel));
         }
 
-        // GET: Admin/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _productContext.Products
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);
-        }
-
-        // POST: Admin/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProduct(int id)
@@ -171,7 +153,7 @@ namespace VendingMachine.Controllers
                 System.IO.File.Delete(path);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Panel));
         }
 
         private bool ProductExists(int id)
