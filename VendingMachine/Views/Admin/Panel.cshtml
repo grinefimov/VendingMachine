@@ -1,10 +1,14 @@
 ﻿@model VendingMachine.Models.AdminModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Administrator panel";
 }
 
-<h1 class="text-center mb-3">Administrator panel</h1>
+<h1 class="text-center mb-2">Administrator panel</h1>
+
+<div class="text-center">
+    <a asp-action="Index" asp-controller="Client">To Client</a>
+</div>
 
 <form asp-action="SaveData" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>

@@ -1,11 +1,49 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model VendingMachine.Models.VendingMachineModel
+
+@{
+    ViewData["Title"] = "Vending Machine";
 }
 
-    <div class="text-center">
-        <h1 class="display-4">Vending Machine</h1>
-        @*@for (int i = 0; i < (int)ViewData["NumTimes"]; i++)
-        {
-            <div></div>
-        }*@
+<h1 class="text-center mb-4">Vending Machine</h1>
+
+<div class="row justify-content-center">
+    @for (int i = 0; i < Model.Products.Count; i++)
+    {
+        @if (Model.Products[i].Quantity > 0)
+         {
+             <div class="col-sm-4 col-md-3 col-lg-2 mb-3">
+                 <div class="card">
+                     <img src="@Model.Products[i].ImageUrl" asp-append-version="true" alt="@Model.Products[i].ImageUrl" class="card-img-top"/>
+                     <div class="card-footer py-2 px-3">
+                         <p class="mb-0">@Model.Products[i].Name</p>
+                         <p class="mb-0 text-right">
+                             <strong>@Model.Products[i].Price rub</strong>
+                         </p>
+                     </div>
+                 </div>
+             </div>
+         }
+    }
+</div>
+
+<div class="row justify-content-center mb-5">
+    <div class="col-4">
+        Checkout:<br /><br />
+        for<br /><br />
+        Total:
     </div>
+    <div class="col-auto">
+        Balance:<br/><br />
+        Change:<br/><br />
+        <button disabled="disabled" class="btn btn-primary btn-lg px-5">Buy</button>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    @for (int i = 0; i < Model.Cashes.Count; i++)
+    {
+        <div class="col-auto mb-3">
+            <button disabled="@Model.Cashes[i].IsBlocked" class="btn btn-primary btn-lg py-3 px-4">@Model.Cashes[i].FaceValue</button>
+        </div>
+    }
+</div>

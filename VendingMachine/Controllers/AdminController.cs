@@ -14,6 +14,7 @@ namespace VendingMachine.Controllers
 {
     public class AdminController : Controller
     {
+        private readonly string _secretKey = "SecretKey";
         private readonly ProductContext _productContext;
         private readonly CashContext _cashContext;
         private readonly IHostEnvironment _hostingEnvironment;
@@ -27,12 +28,13 @@ namespace VendingMachine.Controllers
 
         public async Task<IActionResult> Panel(string key)
         {
-            if (key == "SecretKey")
+            if (key == _secretKey)
             {
-                var model = new AdminModel(
-                    await _productContext.Products.ToListAsync(),
-                    await _cashContext.Cashes.ToListAsync()
-                );
+                var model = new AdminModel()
+                {
+                    Products = await _productContext.Products.ToListAsync(),
+                    Cashes = await _cashContext.Cashes.ToListAsync()
+                };
 
                 return View(model);
             }
@@ -103,7 +105,7 @@ namespace VendingMachine.Controllers
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        if (!ProductExists(cash.Id))
+                        if (!CashExists(cash.Id))
                         {
                             return NotFound();
                         }
@@ -115,7 +117,7 @@ namespace VendingMachine.Controllers
                 }
             }
 
-            return RedirectToAction(nameof(Panel));
+            return RedirectToAction(nameof(Panel), new { key = _secretKey });
         }
 
         [HttpPost]
@@ -137,7 +139,8 @@ namespace VendingMachine.Controllers
 
             _productContext.Add(model.NewProduct);
             await _productContext.SaveChangesAsync();
-            return RedirectToAction(nameof(Panel));
+
+            return RedirectToAction(nameof(Panel), new { key = _secretKey });
         }
 
         [HttpPost]
@@ -153,12 +156,17 @@ namespace VendingMachine.Controllers
                 System.IO.File.Delete(path);
             }
 
-            return RedirectToAction(nameof(Panel));
+            return RedirectToAction(nameof(Panel), new { key = _secretKey });
         }
 
         private bool ProductExists(int id)
         {
             return _productContext.Products.Any(e => e.Id == id);
+        }
+
+        private bool CashExists(int id)
+        {
+            return _cashContext.Cashes.Any(e => e.Id == id);
         }
     }
 }
