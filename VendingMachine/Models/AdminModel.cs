@@ -11,7 +11,7 @@ namespace VendingMachine.Models
         public Product NewProduct { get; set; }
         public List<Product> Products { get; set; }
 
-        public AdminModel(List<VendingMachine.Models.Product> products)
+        public AdminModel(List<Product> products)
         {
             Products = products;
         }

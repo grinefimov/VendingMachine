@@ -98,15 +98,17 @@
                 </div>
                 <div class="modal-footer">
                     <form asp-action="DeleteProduct">
-                        <input type="hidden" name="id" value="@(Model.Products[i].Id)"/>
+                        <input type="hidden" name="id" value="@(Model.Products[i].Id)" />
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <input type="submit" value="Delete" class="btn btn-danger"/>
+                        <input type="submit" value="Delete" class="btn btn-danger" />
                     </form>
                 </div>
             </div>
         </div>
     </div>
 }
+
+@*@await Html.PartialAsync("_AddProductPartial")*@
 
 <div class="row mb-3">
     <div class="col-md-4">
@@ -145,34 +147,33 @@
 
 
 
-<script>
-    $(document).ready(function () {
-        bsCustomFileInput.init();
-
-        var fileInputs = document.getElementsByName("files");
-        for (let i = 0; i < fileInputs.length; i++) {
-            fileInputs[i].addEventListener("change",
-                (event) => {
-                    fileInputs[i].parentNode.parentNode.children[0].value = "Changed";
-                });
-        }
-
-        document.getElementById("submitButton").addEventListener("click", validateFileInput);
-
-        var fileInput = document.getElementById("newCustomFile");
-        fileInput.addEventListener('change',
-            (event) => {
-                document.getElementById("fileValidationText").innerText = "";
-            });
-
-        function validateFileInput() {
-            if (fileInput.value === "") {
-                document.getElementById("fileValidationText").innerText = "Image is required.";
-            }
-        }
-    });
-</script>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            bsCustomFileInput.init();
+
+            var fileInputs = document.getElementsByName("files");
+            for (let i = 0; i < fileInputs.length; i++) {
+                fileInputs[i].addEventListener("change",
+                    (event) => {
+                        fileInputs[i].parentNode.parentNode.children[0].value = "Changed";
+                    });
+            }
+
+            document.getElementById("submitButton").addEventListener("click", validateFileInput);
+
+            var fileInput = document.getElementById("newCustomFile");
+            fileInput.addEventListener('change',
+                (event) => {
+                    document.getElementById("fileValidationText").innerText = "";
+                });
+
+            function validateFileInput() {
+                if (fileInput.value === "") {
+                    document.getElementById("fileValidationText").innerText = "Image is required.";
+                }
+            }
+        });
+    </script>
 }
