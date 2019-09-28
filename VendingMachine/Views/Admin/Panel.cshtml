@@ -99,7 +99,7 @@
                         </div>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal@(i)">
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal@(i)">
                             Delete
                         </button>
                     </td>
@@ -115,11 +115,11 @@
 
 @for (int i = 0; i < Model.Products.Count; i++)
 {
-    <div class="modal fade" id="exampleModal@(i)" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="deleteModal@(i)" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Delete product</h5>
+                    <h5 class="modal-title">Delete product</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

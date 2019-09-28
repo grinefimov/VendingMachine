@@ -5,15 +5,18 @@
     ViewData["Title"] = "Vending Machine";
 }
 
-<h1 class="text-center mb-4">Vending Machine</h1>
+<h1 class="text-center mb-3">Vending Machine</h1>
 
+<h5 class="text-center mb-3">Deposit money and then select products.</h5>
+
+@* Product cards *@
 <div class="row justify-content-center">
     @for (int i = 0; i < Model.Products.Count; i++)
     {
         @if (Model.Products[i].Quantity > 0)
         {
             <div class="col-sm-4 col-md-3 col-lg-2 mb-3">
-                <div class="card">
+                <div class="card" name="productCard">
                     <img src="@Model.Products[i].ImageUrl" asp-append-version="true" alt="@Model.Products[i].ImageUrl" class="card-img-top" />
                     <div class="card-footer py-2 px-3">
                         <p class="mb-0">@Model.Products[i].Name</p>
@@ -27,65 +30,158 @@
     }
 </div>
 
+@* Checkout, Total, Balance, Change, Buy button *@
 <div class="row justify-content-center mb-5">
     <div class="col-sm-6 col-lg-4">
         <div>Checkout:</div>
         <div id="checkout" class="mb-2"></div>
         <div class="row font-weight-bold">
             <div class="col">Total:</div>
-            <div class="col font-italic"></div>
+            <div class="col font-italic text-right" id="total">0 rub</div>
+            <div class="col"></div>
         </div>
     </div>
     <div class="col-auto align-self-end">
         <div class="row font-weight-bold mb-2">
             <div class="col">Balance:</div>
-            <div class="col font-italic"></div>
+            <div class="col font-italic text-right" id="balance">0 rub</div>
         </div>
         <div class="row mb-3">
             <div class="col">Change:</div>
-            <div class="col font-italic"></div>
+            <div class="col font-italic text-right" id="change">0 rub</div>
         </div>
-        <button disabled="disabled" class="btn btn-primary btn-lg px-5">Buy</button>
+        <button onclick="buy()" class="btn btn-primary btn-lg px-5">Buy</button>
     </div>
 </div>
 
+@* Cashes *@
 <div class="row justify-content-center">
     @for (int i = 0; i < Model.Cashes.Count; i++)
     {
         <div class="col-auto mb-3">
-            <button disabled="@Model.Cashes[i].IsBlocked" class="btn btn-primary btn-lg py-3 px-4">@Model.Cashes[i].FaceValue</button>
+            <button name="cashButton" disabled="@Model.Cashes[i].IsBlocked" class="btn btn-primary btn-lg py-3 px-4">@Model.Cashes[i].FaceValue</button>
         </div>
     }
 </div>
 
+@* Message modal *@
+<button hidden="hidden" id="messageModalButton" type="button" data-toggle="modal" data-target="#messageModal"></button>
+<div id="messageModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <h5 id="modalMessage" class="mt-4 mb-5"></h5>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             let products = [];
+            let cashes = [];
+            let balance = {
+                value: 0,
+                get get() { return this.value; },
+                set set(value) {
+                    this.value = value;
+                    document.getElementById("balance").innerText = value + " rub";
+                    change.updateValue();
+                }
+            };
+            let total = {
+                value: 0,
+                get get() { return this.value; },
+                set set(value) {
+                    this.value = value;
+                    document.getElementById("total").innerText = value + " rub";
+                    change.updateValue();
+                }
+            };
+            let change = {
+                value: 0,
+                get get() { return this.value; },
+                set set(value) {
+                    this.value = value;
+                    document.getElementById("change").innerText = value + " rub";
+                },
+                updateValue: function() {
+                    this.set = balance.get - total.get;
+                }
+            };
+            let checkout = [];
+            let newCashes = [];
+            let cards = document.getElementsByName("productCard");
+            let cashButtons = document.getElementsByName("cashButton");
+            let buyButton = document.getElementById("buyButton");
+
             @foreach (var product in Model.Products)
             {
                 <text>
-                    products.push({ name: "@product.Name", price: @product.Price });
+                    products.push({ id: @product.Id, name: "@product.Name", price: @product.Price,
+                        quantity: @product.Quantity
+                    });
+                </text>
+            }
+            @foreach (var cash in Model.Cashes)
+            {
+                <text>
+                    cashes.push({ id: @cash.Id, faceValue: @cash.FaceValue, quantity: @cash.Quantity });
                 </text>
             }
 
-            let checkout = [];
-
-            let cards = document.getElementsByClassName("card");
             for (let i = 0; i < cards.length; i++) {
                 cards[i].addEventListener("click",
                     (event) => {
-                        let div = document.createElement("div");
-                        div.innerHTML =
-                            `<div class="row">
-                                <div class="col">` + products[i].name + `</div>
-                                <div class="col font-italic">` + products[i].price + ` rub</div>
-                            </div>`;
-                        document.getElementById("checkout").appendChild(div);
+                        if (products[i].quantity > 0) {
+                            if (total.get + products[i].price <= balance.get) {
+                                products[i].quantity -= 1;
+                                total.set = total.get + products[i].price;
+                                checkout.push(products[i]);
+
+                                let div = document.createElement("div");
+                                div.innerHTML =
+                                    `<div class="row">
+                                        <div class="col">` +
+                                            products[i].name +
+                                        `</div>
+                                        <div class="col font-italic text-right">` +
+                                            products[i].price + ` rub
+                                        </div>
+                                        <div class="col"></div>
+                                    </div>`;
+                                document.getElementById("checkout").appendChild(div);
+                            } else {
+                                modalAlert("Deposit money!");
+                            }
+                        } else {
+                            modalAlert("Sold out!");
+                        }
                     });
+            }
+            for (let i = 0; i < cashButtons.length; i++) {
+                cashButtons[i].addEventListener("click",
+                    (event) => {
+                        newCashes.push(cashes[i].id);
+                        balance.set = balance.get + cashes[i].faceValue;
+                    });
+            }
+            
+            function modalAlert(message) {
+                document.getElementById("modalMessage").innerText = message;
+                document.getElementById("messageModalButton").click();
             }
         });
 
+        function buy() {
+            document.getElementById("modalMessage").innerText = "buy";
+            document.getElementById("messageModalButton").click();
+        }
     </script>
 }
