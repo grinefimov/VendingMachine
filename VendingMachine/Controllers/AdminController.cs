@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -126,7 +127,9 @@ namespace VendingMachine.Controllers
             if (file != null)
             {
                 var fileInfo = new FileInfo(file.FileName);
-                var newFilename = model.Name + fileInfo.Extension;
+                var now = DateTime.Now;
+                string time = " " + now.Day + "-" + now.Month + "-" + now.Year + " " + now.Hour + "-" + now.Minute;
+                var newFilename = model.Name + time + fileInfo.Extension;
                 var path = Path.Combine("", _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
                 await using (var stream = new FileStream(path, FileMode.Create))
                 {

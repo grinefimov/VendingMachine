@@ -190,25 +190,27 @@
 
             buyButton.addEventListener("click",
                 (event) => {
-                    $.ajax({
-                        url: "@Url.Action("Buy")",
-                        data: { products: products, newCashIds: newCashIds, change: change.get },
-                        type: "POST",
-                        success: function(data) {
-                            checkout = [];
-                            checkoutDiv.innerText = "";
-                            total.set = 0;
-                            balance.set = 0;
-                            change.set = 0;
-                            let noCashLeftMessage = "";
-                            if (data.noCashLeft) { noCashLeftMessage = " No Cash Left"; }
-                            modalAlert("Thanks! Your change: " + data.change + " rub. Cashes: " +
-                                data.changeCashes + noCashLeftMessage);
-                        },
-                        error: function() {
-                            throw "AJAX error";
-                        }
-                    });
+                    if (checkout.length) {
+                        $.ajax({
+                            url: "@Url.Action("Buy")",
+                            data: { checkout: checkout, newCashIds: newCashIds, change: change.get },
+                            type: "POST",
+                            success: function(data) {
+                                checkout = [];
+                                checkoutDiv.innerText = "";
+                                total.set = 0;
+                                balance.set = 0;
+                                change.set = 0;
+                                let noCashLeftMessage = "";
+                                if (data.noCashLeft) { noCashLeftMessage = " No Cash Left"; }
+                                modalAlert("Thanks! Your change: " + data.change + " rub. Cashes: " +
+                                    data.changeCashes + noCashLeftMessage);
+                            },
+                            error: function() {
+                                throw "AJAX error";
+                            }
+                        });
+                    }
                 });
         });
     </script>

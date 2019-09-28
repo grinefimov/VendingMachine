@@ -42,9 +42,21 @@ namespace VendingMachine.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Buy(List<Product> products, List<int> newCashIds, float change)
+        public async Task<IActionResult> Buy(List<Product> checkout, List<int> newCashIds, float change)
         {
+            var products = await _productContext.Products.ToListAsync();
             var cashes = await _cashContext.Cashes.OrderByDescending(c => c.FaceValue).ToListAsync();
+
+            foreach (var product in products)
+            {
+                foreach (var buy in checkout)
+                {
+                    if (product.Id == buy.Id)
+                    {
+                        product.Quantity--;
+                    }
+                }
+            }
 
             foreach (var cash in cashes)
             {
