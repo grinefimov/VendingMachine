@@ -220,8 +220,8 @@ else
                                 if (data.noCashLeft) {
                                     noCashLeftMessage = " No Cash Left";
                                 }
-                                modalAlert("Your change: " + data.change + " rub. Cashes: " +
-                                    data.changeCashes + noCashLeftMessage);
+                                modalAlert("Your change: " + data.change + " rub (Cashes: " +
+                                    data.changeCashes + noCashLeftMessage + ")");
                             },
                             error: function() {
                                 throw "AJAX error";
