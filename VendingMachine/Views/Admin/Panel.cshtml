@@ -10,6 +10,8 @@
     <a asp-action="Index" asp-controller="Client">To Client</a>
 </div>
 
+<h5 id="notSavedWarning" hidden="hidden" class="text-center text-danger mt-2">Changes not saved</h5>
+
 <form asp-action="SaveData" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -168,6 +170,14 @@
                 if (fileInput.value === "") {
                     document.getElementById("fileValidationText").innerText = "Image is required.";
                 }
+            }
+
+            let inputs = document.getElementsByTagName("input")
+            for (let i = 0; i < inputs.length; i++) {
+                inputs[i].addEventListener('input',
+                    (event) => {
+                        document.getElementById("notSavedWarning").hidden = false;
+                    });
             }
         });
     </script>

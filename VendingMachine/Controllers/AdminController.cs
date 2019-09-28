@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -117,7 +116,7 @@ namespace VendingMachine.Controllers
                 }
             }
 
-            return RedirectToAction(nameof(Panel), new { key = _secretKey });
+            return RedirectToAction(nameof(Panel), new {key = _secretKey});
         }
 
         [HttpPost]
@@ -140,7 +139,7 @@ namespace VendingMachine.Controllers
             _productContext.Add(model);
             await _productContext.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Panel), new { key = _secretKey });
+            return RedirectToAction(nameof(Panel), new {key = _secretKey});
         }
 
         [HttpPost]
@@ -156,7 +155,7 @@ namespace VendingMachine.Controllers
                 System.IO.File.Delete(path);
             }
 
-            return RedirectToAction(nameof(Panel), new { key = _secretKey });
+            return RedirectToAction(nameof(Panel), new {key = _secretKey});
         }
 
         private bool ProductExists(int id)
