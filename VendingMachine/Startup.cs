@@ -27,9 +27,9 @@ namespace VendingMachine
             services.AddControllersWithViews();
 
             services.AddDbContext<ProductContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("ProductContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("VendingMachine")));
             services.AddDbContext<CashContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("CashContext")));
+                options.UseSqlServer(Configuration.GetConnectionString("VendingMachine")));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

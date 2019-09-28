@@ -30,7 +30,7 @@ namespace VendingMachine.Controllers
         {
             if (key == _secretKey)
             {
-                var model = new VendingMachineModel()
+                var model = new AdminPanelModel()
                 {
                     Products = await _productContext.Products.ToListAsync(),
                     Cashes = await _cashContext.Cashes.ToListAsync()
@@ -43,75 +43,81 @@ namespace VendingMachine.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveData(VendingMachineModel model, List<IFormFile> files)
+        public async Task<IActionResult> SaveData(AdminPanelModel model, List<IFormFile> files)
         {
-            var fileNumber = 0;
-            foreach (var product in model.Products)
-            {
-                if (product.ImageUrl == "Changed")
-                {
-                    if (files[fileNumber] != null)
-                    {
-                        var deletePath = Path.Combine("",
-                            _hostingEnvironment.ContentRootPath + @"/wwwroot/" + product.ImageUrl);
-                        if (System.IO.File.Exists(deletePath))
-                        {
-                            System.IO.File.Delete(deletePath);
-                        }
-
-                        var fileInfo = new FileInfo(files[fileNumber].FileName);
-                        var newFilename = product.Name + fileInfo.Extension;
-                        var path = Path.Combine("",
-                            _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
-                        await using (var stream = new FileStream(path, FileMode.Create))
-                        {
-                            await files[fileNumber].CopyToAsync(stream);
-                        }
-
-                        product.ImageUrl = @"/images/" + newFilename;
-                        fileNumber++;
-                    }
-                }
-            }
-
             if (ModelState.IsValid)
             {
-                foreach (var product in model.Products)
+                if (model.Products != null)
                 {
-                    try
+                    var fileNumber = 0;
+                    foreach (var product in model.Products)
                     {
-                        _productContext.Update(product);
-                        await _productContext.SaveChangesAsync();
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!ProductExists(product.Id))
+                        if (product.ImageUrl == "Changed")
                         {
-                            return NotFound();
+                            if (files[fileNumber] != null)
+                            {
+                                var deletePath = Path.Combine("",
+                                    _hostingEnvironment.ContentRootPath + @"/wwwroot/" + product.ImageUrl);
+                                if (System.IO.File.Exists(deletePath))
+                                {
+                                    System.IO.File.Delete(deletePath);
+                                }
+
+                                var fileInfo = new FileInfo(files[fileNumber].FileName);
+                                var newFilename = product.Name + fileInfo.Extension;
+                                var path = Path.Combine("",
+                                    _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
+                                await using (var stream = new FileStream(path, FileMode.Create))
+                                {
+                                    await files[fileNumber].CopyToAsync(stream);
+                                }
+
+                                product.ImageUrl = @"/images/" + newFilename;
+                                fileNumber++;
+                            }
                         }
-                        else
+                    }
+
+                    foreach (var product in model.Products)
+                    {
+                        try
                         {
-                            throw;
+                            _productContext.Update(product);
+                            await _productContext.SaveChangesAsync();
+                        }
+                        catch (DbUpdateConcurrencyException)
+                        {
+                            if (!ProductExists(product.Id))
+                            {
+                                return NotFound();
+                            }
+                            else
+                            {
+                                throw;
+                            }
                         }
                     }
                 }
 
-                foreach (var cash in model.Cashes)
+                if (model.Cashes != null)
                 {
-                    try
+                    foreach (var cash in model.Cashes)
                     {
-                        _cashContext.Update(cash);
-                        await _cashContext.SaveChangesAsync();
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!CashExists(cash.Id))
+                        try
                         {
-                            return NotFound();
+                            _cashContext.Update(cash);
+                            await _cashContext.SaveChangesAsync();
                         }
-                        else
+                        catch (DbUpdateConcurrencyException)
                         {
-                            throw;
+                            if (!CashExists(cash.Id))
+                            {
+                                return NotFound();
+                            }
+                            else
+                            {
+                                throw;
+                            }
                         }
                     }
                 }
@@ -122,24 +128,24 @@ namespace VendingMachine.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddProduct(Product model, IFormFile file)
+        public async Task<IActionResult> AddProduct(AdminPanelModel model, IFormFile file)
         {
             if (file != null)
             {
                 var fileInfo = new FileInfo(file.FileName);
                 var now = DateTime.Now;
                 string time = " " + now.Day + "-" + now.Month + "-" + now.Year + " " + now.Hour + "-" + now.Minute;
-                var newFilename = model.Name + time + fileInfo.Extension;
+                var newFilename = model.NewProduct.Name + time + fileInfo.Extension;
                 var path = Path.Combine("", _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
                 await using (var stream = new FileStream(path, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
 
-                model.ImageUrl = @"/images/" + newFilename;
+                model.NewProduct.ImageUrl = @"/images/" + newFilename;
             }
 
-            _productContext.Add(model);
+            _productContext.Add(model.NewProduct);
             await _productContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(Panel), new {key = _secretKey});

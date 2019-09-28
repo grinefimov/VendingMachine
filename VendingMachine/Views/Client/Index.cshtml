@@ -10,25 +10,39 @@
 <h5 class="text-center mb-3">Deposit money and then select products.</h5>
 
 @* Product cards *@
-<div class="row justify-content-center">
-    @for (int i = 0; i < Model.Products.Count; i++)
+@{
+    int quantity = 0;
+    foreach (var product in Model.Products)
     {
-        @if (Model.Products[i].Quantity > 0)
-         {
-             <div class="col-sm-4 col-md-3 col-lg-2 mb-3">
-                 <div class="card" name="productCard">
-                     <img src="@Model.Products[i].ImageUrl" asp-append-version="true" alt="@Model.Products[i].ImageUrl" class="card-img-top"/>
-                     <div class="card-footer py-2 px-3">
-                         <p class="mb-0">@Model.Products[i].Name</p>
-                         <p class="text-right font-italic mb-0">
-                             @Model.Products[i].Price rub
-                         </p>
+        quantity += product.Quantity;
+    }
+}
+@if (quantity == 0)
+{
+    <h2 class="text-center my-5">Empty</h2>
+}
+else
+{
+    <div class="row justify-content-center">
+        @for (int i = 0; i < Model.Products.Count; i++)
+        {
+            @if (Model.Products[i].Quantity > 0)
+             {
+                 <div class="col-sm-4 col-md-3 col-lg-2 mb-3">
+                     <div class="card" name="productCard">
+                         <img src="@Model.Products[i].ImageUrl" asp-append-version="true" alt="@Model.Products[i].ImageUrl" class="card-img-top"/>
+                         <div class="card-footer py-2 px-3">
+                             <p class="mb-0">@Model.Products[i].Name</p>
+                             <p class="text-right font-italic mb-0">
+                                 @Model.Products[i].Price rub
+                             </p>
+                         </div>
                      </div>
                  </div>
-             </div>
-         }
-    }
-</div>
+             }
+        }
+    </div>
+}
 
 @* Checkout, Total, Balance, Change, Buy button *@
 <div class="row justify-content-center mb-5">
@@ -190,20 +204,23 @@
 
             buyButton.addEventListener("click",
                 (event) => {
-                    if (checkout.length) {
+                    if (checkout.length || balance.get > 0) {
                         $.ajax({
                             url: "@Url.Action("Buy")",
                             data: { checkout: checkout, newCashIds: newCashIds, change: change.get },
                             type: "POST",
                             success: function(data) {
+                                newCashIds = [];
                                 checkout = [];
                                 checkoutDiv.innerText = "";
                                 total.set = 0;
                                 balance.set = 0;
                                 change.set = 0;
                                 let noCashLeftMessage = "";
-                                if (data.noCashLeft) { noCashLeftMessage = " No Cash Left"; }
-                                modalAlert("Thanks! Your change: " + data.change + " rub. Cashes: " +
+                                if (data.noCashLeft) {
+                                    noCashLeftMessage = " No Cash Left";
+                                }
+                                modalAlert("Your change: " + data.change + " rub. Cashes: " +
                                     data.changeCashes + noCashLeftMessage);
                             },
                             error: function() {

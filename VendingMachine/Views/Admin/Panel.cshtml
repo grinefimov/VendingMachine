@@ -1,4 +1,4 @@
-﻿@model VendingMachine.Models.VendingMachineModel
+﻿@model VendingMachine.Models.AdminPanelModel
 
 @{
     ViewData["Title"] = "Administrator panel";
@@ -39,7 +39,7 @@
             </div>
         }
     </div>
-    
+
     <h3>Products</h3>
     <div class="table-responsive mb-2">
 
@@ -141,7 +141,40 @@
     </div>
 }
 
-@await Html.PartialAsync("_AddProductPartial", new Product())
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <h3>Add product</h3>
+        <form asp-action="AddProduct" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.NewProduct.Name"></label>
+                <input asp-for="@Model.NewProduct.Name" placeholder="@nameof(Product.Name)" class="form-control"/>
+                <span asp-validation-for="@Model.NewProduct.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.NewProduct.Price"></label>
+                <input asp-for="@Model.NewProduct.Price" placeholder="@nameof(Product.Price)" class="form-control"/>
+                <span asp-validation-for="@Model.NewProduct.Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.NewProduct.ImageUrl"></label>
+                <div class="custom-file">
+                    <input type="file" name="file" class="custom-file-input" id="newCustomFile" required/>
+                    <label class="custom-file-label" for="newCustomFile">Choose file</label>
+                </div>
+                <span id="fileValidationText" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.NewProduct.Quantity"></label>
+                <input asp-for="@Model.NewProduct.Quantity" placeholder="@nameof(Product.Quantity)" class="form-control"/>
+                <span asp-validation-for="@Model.NewProduct.Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group text-center">
+                <input type="submit" value="Add" id="submitButton" class="btn btn-primary btn-lg px-5"/>
+            </div>
+        </form>
+    </div>
+</div>
 
 
 @section Scripts {

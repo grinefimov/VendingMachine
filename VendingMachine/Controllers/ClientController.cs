@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using VendingMachine.Data;
 using VendingMachine.Models;
 
@@ -12,14 +11,12 @@ namespace VendingMachine.Controllers
 {
     public class ClientController : Controller
     {
-        private readonly ILogger<ClientController> _logger;
         private readonly ProductContext _productContext;
         private readonly CashContext _cashContext;
 
-        public ClientController(ILogger<ClientController> logger, ProductContext productContext,
+        public ClientController(ProductContext productContext,
             CashContext cashContext)
         {
-            _logger = logger;
             _productContext = productContext;
             _cashContext = cashContext;
         }
