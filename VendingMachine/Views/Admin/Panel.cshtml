@@ -183,7 +183,7 @@
         $(document).ready(function() {
             bsCustomFileInput.init();
 
-            let fileInputs = document.getElementsByName("files");
+            const fileInputs = document.getElementsByName("files");
             for (let i = 0; i < fileInputs.length; i++) {
                 fileInputs[i].addEventListener("change",
                     (event) => {
@@ -193,7 +193,7 @@
 
             document.getElementById("submitButton").addEventListener("click", validateFileInput);
 
-            let fileInput = document.getElementById("newCustomFile");
+            const fileInput = document.getElementById("newCustomFile");
             fileInput.addEventListener('change',
                 (event) => {
                     document.getElementById("fileValidationText").innerText = "";
@@ -205,7 +205,7 @@
                 }
             }
 
-            let inputs = document.getElementsByTagName("input")
+            const inputs = document.getElementsByTagName("input");
             for (let i = 0; i < inputs.length; i++) {
                 inputs[i].addEventListener('input',
                     (event) => {

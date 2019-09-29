@@ -46,15 +46,15 @@ else
 
 @* Checkout, Total, Balance, Change, Buy button *@
 <div class="row justify-content-center mb-5">
-    <div class="col-sm-6 col-lg-4">
+    <div class="col-sm-5 col-lg-3">
         <div>Checkout:</div>
         <div id="checkout" class="mb-2"></div>
         <div class="row font-weight-bold">
             <div class="col">Total:</div>
             <div class="col font-italic text-right" id="total">0 rub</div>
-            <div class="col"></div>
         </div>
     </div>
+    <div class="col-sm-1"></div>
     <div class="col-auto align-self-end">
         <div class="row font-weight-bold mb-2">
             <div class="col">Balance:</div>
@@ -95,13 +95,12 @@ else
 
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $(document).ready(function() {
-            let products = [];
-            let cashes = [];
-            let checkout = [];
-            let total = {
+            const products = [];
+            const cashes = [];
+            const checkout = [];
+            const total = {
                 value: 0,
                 get get() { return this.value; },
                 set set(value) {
@@ -110,7 +109,7 @@ else
                     change.updateValue();
                 }
             };
-            let balance = {
+            const balance = {
                 value: 0,
                 get get() { return this.value; },
                 set set(value) {
@@ -119,7 +118,7 @@ else
                     change.updateValue();
                 }
             };
-            let change = {
+            const change = {
                 value: 0,
                 get get() { return this.value; },
                 set set(value) {
@@ -130,11 +129,11 @@ else
                     this.set = balance.get - total.get;
                 }
             };
-            let newCashIds = [];
-            let cards = document.getElementsByName("productCard");
-            let cashButtons = document.getElementsByName("cashButton");
-            let buyButton = document.getElementById("buyButton");
-            let checkoutDiv = document.getElementById("checkout");
+            const newCashIds = [];
+            const cards = document.getElementsByName("productCard");
+            const cashButtons = document.getElementsByName("cashButton");
+            const buyButton = document.getElementById("buyButton");
+            const checkoutDiv = document.getElementById("checkout");
 
             @foreach (var product in Model.Products)
             {
@@ -168,17 +167,11 @@ else
                                 total.set = total.get + products[i].price;
                                 checkout.push(products[i]);
 
-                                let div = document.createElement("div");
+                                const div = document.createElement("div");
                                 div.innerHTML =
                                     `<div class="row">
-                                        <div class="col">` +
-                                    products[i].name +
-                                    `</div>
-                                        <div class="col font-italic text-right">` +
-                                    products[i].price +
-                                    ` rub
-                                        </div>
-                                        <div class="col"></div>
+                                        <div class="col">${products[i].name}</div>
+                                        <div class="col font-italic text-right">${products[i].price} rub</div>
                                     </div>`;
                                 checkoutDiv.appendChild(div);
                             } else {
@@ -210,8 +203,8 @@ else
                             data: { checkout: checkout, newCashIds: newCashIds, change: change.get },
                             type: "POST",
                             success: function(data) {
-                                newCashIds = [];
-                                checkout = [];
+                                newCashIds.length = 0;
+                                checkout.length = 0;
                                 checkoutDiv.innerText = "";
                                 total.set = 0;
                                 balance.set = 0;
@@ -220,8 +213,7 @@ else
                                 if (data.noCashLeft) {
                                     noCashLeftMessage = " No Cash Left";
                                 }
-                                modalAlert("Your change: " + data.change + " rub (Cashes: " +
-                                    data.changeCashes + noCashLeftMessage + ")");
+                                modalAlert(`Your change: ${data.change} rub (Cashes: ${data.changeCashes}${noCashLeftMessage})`);
                             },
                             error: function() {
                                 throw "AJAX error";

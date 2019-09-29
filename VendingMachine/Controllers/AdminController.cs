@@ -43,6 +43,7 @@ namespace VendingMachine.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveData(AdminPanelModel model, List<IFormFile> files)
         {
             if (ModelState.IsValid)

@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +12,7 @@ namespace VendingMachine
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
         }
@@ -21,10 +23,13 @@ namespace VendingMachine
         {
             services.AddControllersWithViews();
 
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "App_Data");
+            var vendingMachineConnectionString = Configuration.GetConnectionString("VendingMachine").Replace("|DataDirectory|", path);
+
             services.AddDbContext<ProductContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("VendingMachine")));
+                options.UseSqlServer(vendingMachineConnectionString));
             services.AddDbContext<CashContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("VendingMachine")));
+                options.UseSqlServer(vendingMachineConnectionString));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
