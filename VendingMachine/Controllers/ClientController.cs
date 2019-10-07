@@ -32,6 +32,14 @@ namespace VendingMachine.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> GetData()
+        {
+            var products = await _productContext.Products.ToListAsync();
+            var cashes = await _cashContext.Cashes.ToListAsync();
+
+            return Json(new { products, cashes });
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -120,7 +128,7 @@ namespace VendingMachine.Controllers
                 }
             }
 
-            return Json(new {change = change, changeCashes = changeCashes, noCashLeft = noCashLeft});
+            return Json(new {change, changeCashes, noCashLeft});
         }
 
         private bool ProductExists(int id)
