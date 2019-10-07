@@ -1,217 +1,217 @@
 ﻿@model VendingMachine.Models.AdminPanelModel
 
 @{
-    ViewData["Title"] = "Administrator panel";
+  ViewData["Title"] = "Administrator panel";
 }
 
 <h1 class="text-center mb-2">Administrator panel</h1>
 
 <div class="text-center">
-    <a asp-action="Index" asp-controller="Client">To Client</a>
+  <a asp-action="Index" asp-controller="Client">To Client</a>
 </div>
 
 <h5 id="notSavedWarning" hidden="hidden" class="text-center text-danger mt-2">Changes not saved</h5>
 
 <form asp-action="SaveData" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+  <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <h3>Cash</h3>
-    <div class="row mb-2">
-        @for (int i = 0; i < Model.Cashes.Count; i++)
-        {
-            <div class="col p-1">
-                <div class="card">
-                    <div class="card-body p-2">
-                        <input type="hidden" asp-for="@Model.Cashes[i].Id"/>
-                        <input type="hidden" asp-for="@Model.Cashes[i].FaceValue"/>
-                        <label asp-for="@Model.Cashes[i].FaceValue"></label>: @Model.Cashes[i].FaceValue
-                        <div class="form-group mb-2">
-                            <label asp-for="@Model.Cashes[i].Quantity"></label>
-                            <input asp-for="@Model.Cashes[i].Quantity" class="form-control"/>
-                            <span asp-validation-for="@Model.Cashes[i].Quantity" class="text-danger"></span>
-                        </div>
-                        <div class="form-group mb-0">
-                            <input type="checkbox" asp-for="@Model.Cashes[i].IsBlocked" style="min-width: 25px"/>
-                            <label asp-for="@Model.Cashes[i].IsBlocked"></label>
-                        </div>
-                    </div>
-                </div>
+  <h3>Cash</h3>
+  <div class="row mb-2">
+    @for (int i = 0; i < Model.Cashes.Count; i++)
+    {
+      <div class="col p-1">
+        <div class="card">
+          <div class="card-body p-2">
+            <input type="hidden" asp-for="@Model.Cashes[i].Id"/>
+            <input type="hidden" asp-for="@Model.Cashes[i].FaceValue"/>
+            <label asp-for="@Model.Cashes[i].FaceValue"></label>: @Model.Cashes[i].FaceValue
+            <div class="form-group mb-2">
+              <label asp-for="@Model.Cashes[i].Quantity"></label>
+              <input asp-for="@Model.Cashes[i].Quantity" class="form-control"/>
+              <span asp-validation-for="@Model.Cashes[i].Quantity" class="text-danger"></span>
             </div>
-        }
-    </div>
-
-    <h3>Products</h3>
-    <div class="table-responsive mb-2">
-
-        <table class="table mb-2">
-            <thead>
-            <tr>
-                <th>
-                    Image
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Products[0].Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Products[0].Price)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Products[0].ImageUrl)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Products[0].Quantity)
-                </th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            @for (int i = 0; i < Model.Products.Count; i++)
-            {
-                <tr>
-                    <td>
-                        <img src="@Model.Products[i].ImageUrl" asp-append-version="true" alt="@Model.Products[i].ImageUrl" class="img-thumbnail" width="110"/>
-                        <input type="hidden" asp-for="@Model.Products[i].Id"/>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input asp-for="@Model.Products[i].Name" class="form-control"/>
-                            <span asp-validation-for="@Model.Products[i].Name" class="text-danger"></span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input asp-for="@Model.Products[i].Price" class="form-control"/>
-                            <span asp-validation-for="@Model.Products[i].Price" class="text-danger"></span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input asp-for="@Model.Products[i].ImageUrl" class="form-control"/>
-                            <span asp-validation-for="@Model.Products[i].ImageUrl" class="text-danger"></span>
-                            <div class="custom-file mt-1">
-                                <input type="file" name="files" class="custom-file-input" id="customFile"/>
-                                <label class="custom-file-label" for="customFile">Choose file</label>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            <input asp-for="@Model.Products[i].Quantity" class="form-control"/>
-                            <span asp-validation-for="@Model.Products[i].Quantity" class="text-danger"></span>
-                        </div>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal@(i)">
-                            Delete
-                        </button>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-        <div class="form-group text-center">
-            <input type="submit" value="Save" class="btn btn-primary btn-lg px-5"/>
+            <div class="form-group mb-0">
+              <input type="checkbox" asp-for="@Model.Cashes[i].IsBlocked" style="min-width: 25px"/>
+              <label asp-for="@Model.Cashes[i].IsBlocked"></label>
+            </div>
+          </div>
         </div>
+      </div>
+    }
+  </div>
+
+  <h3>Products</h3>
+  <div class="table-responsive mb-2">
+
+    <table class="table mb-2">
+      <thead>
+      <tr>
+        <th>
+          Image
+        </th>
+        <th>
+          @Html.DisplayNameFor(model => model.Products[0].Name)
+        </th>
+        <th>
+          @Html.DisplayNameFor(model => model.Products[0].Price)
+        </th>
+        <th>
+          @Html.DisplayNameFor(model => model.Products[0].ImageUrl)
+        </th>
+        <th>
+          @Html.DisplayNameFor(model => model.Products[0].Quantity)
+        </th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      @for (int i = 0; i < Model.Products.Count; i++)
+      {
+        <tr>
+          <td>
+            <img src="@Model.Products[i].ImageUrl" asp-append-version="true" alt="@Model.Products[i].ImageUrl" class="img-thumbnail" width="110"/>
+            <input type="hidden" asp-for="@Model.Products[i].Id"/>
+          </td>
+          <td>
+            <div class="form-group">
+              <input asp-for="@Model.Products[i].Name" class="form-control"/>
+              <span asp-validation-for="@Model.Products[i].Name" class="text-danger"></span>
+            </div>
+          </td>
+          <td>
+            <div class="form-group">
+              <input asp-for="@Model.Products[i].Price" class="form-control"/>
+              <span asp-validation-for="@Model.Products[i].Price" class="text-danger"></span>
+            </div>
+          </td>
+          <td>
+            <div class="form-group">
+              <input asp-for="@Model.Products[i].ImageUrl" class="form-control"/>
+              <span asp-validation-for="@Model.Products[i].ImageUrl" class="text-danger"></span>
+              <div class="custom-file mt-1">
+                <input type="file" name="files" class="custom-file-input" id="customFile@(i)"/>
+                <label class="custom-file-label" for="customFile@(i)">Choose file</label>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="form-group">
+              <input asp-for="@Model.Products[i].Quantity" class="form-control"/>
+              <span asp-validation-for="@Model.Products[i].Quantity" class="text-danger"></span>
+            </div>
+          </td>
+          <td>
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal@(i)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      }
+      </tbody>
+    </table>
+    <div class="form-group text-center">
+      <input type="submit" value="Save" class="btn btn-primary btn-lg px-5"/>
     </div>
+  </div>
 </form>
 
 @for (int i = 0; i < Model.Products.Count; i++)
 {
-    <div class="modal fade" id="deleteModal@(i)" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete product</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete "@(Model.Products[i].Name)"?
-                </div>
-                <div class="modal-footer">
-                    <form asp-action="DeleteProduct">
-                        <input type="hidden" name="id" value="@(Model.Products[i].Id)"/>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <input type="submit" value="Delete" class="btn btn-danger"/>
-                    </form>
-                </div>
-            </div>
+  <div class="modal fade" id="deleteModal@(i)" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete product</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        <div class="modal-body">
+          Are you sure you want to delete "@(Model.Products[i].Name)"?
+        </div>
+        <div class="modal-footer">
+          <form asp-action="DeleteProduct">
+            <input type="hidden" name="id" value="@(Model.Products[i].Id)"/>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <input type="submit" value="Delete" class="btn btn-danger"/>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
 }
 
 <div class="row justify-content-center">
-    <div class="col-md-4">
-        <h3>Add product</h3>
-        <form asp-action="AddProduct" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="@Model.NewProduct.Name"></label>
-                <input asp-for="@Model.NewProduct.Name" placeholder="@nameof(Product.Name)" class="form-control"/>
-                <span asp-validation-for="@Model.NewProduct.Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="@Model.NewProduct.Price"></label>
-                <input asp-for="@Model.NewProduct.Price" placeholder="@nameof(Product.Price)" class="form-control"/>
-                <span asp-validation-for="@Model.NewProduct.Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="@Model.NewProduct.ImageUrl"></label>
-                <div class="custom-file">
-                    <input type="file" name="file" class="custom-file-input" id="newCustomFile" required/>
-                    <label class="custom-file-label" for="newCustomFile">Choose file</label>
-                </div>
-                <span id="fileValidationText" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="@Model.NewProduct.Quantity"></label>
-                <input asp-for="@Model.NewProduct.Quantity" placeholder="@nameof(Product.Quantity)" class="form-control"/>
-                <span asp-validation-for="@Model.NewProduct.Quantity" class="text-danger"></span>
-            </div>
-            <div class="form-group text-center">
-                <input type="submit" value="Add" id="submitButton" class="btn btn-primary btn-lg px-5"/>
-            </div>
-        </form>
-    </div>
+  <div class="col-md-4">
+    <h3>Add product</h3>
+    <form asp-action="AddProduct" enctype="multipart/form-data">
+      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      <div class="form-group">
+        <label asp-for="@Model.NewProduct.Name"></label>
+        <input asp-for="@Model.NewProduct.Name" placeholder="@nameof(Product.Name)" class="form-control"/>
+        <span asp-validation-for="@Model.NewProduct.Name" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="@Model.NewProduct.Price"></label>
+        <input asp-for="@Model.NewProduct.Price" placeholder="@nameof(Product.Price)" class="form-control"/>
+        <span asp-validation-for="@Model.NewProduct.Price" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="@Model.NewProduct.ImageUrl"></label>
+        <div class="custom-file">
+          <input type="file" name="file" class="custom-file-input" id="newCustomFile" required/>
+          <label class="custom-file-label" for="newCustomFile">Choose file</label>
+        </div>
+        <span id="fileValidationText" class="text-danger"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="@Model.NewProduct.Quantity"></label>
+        <input asp-for="@Model.NewProduct.Quantity" placeholder="@nameof(Product.Quantity)" class="form-control"/>
+        <span asp-validation-for="@Model.NewProduct.Quantity" class="text-danger"></span>
+      </div>
+      <div class="form-group text-center">
+        <input type="submit" value="Add" id="submitButton" class="btn btn-primary btn-lg px-5"/>
+      </div>
+    </form>
+  </div>
 </div>
 
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        $(document).ready(function() {
-            bsCustomFileInput.init();
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+  <script>
+    $(document).ready(function() {
+      bsCustomFileInput.init();
 
-            const fileInputs = document.getElementsByName("files");
-            for (let i = 0; i < fileInputs.length; i++) {
-                fileInputs[i].addEventListener("change",
-                    (event) => {
-                        fileInputs[i].parentNode.parentNode.children[0].value = "Changed";
-                    });
-            }
+      const fileInputs = document.getElementsByName("files");
+      for (let i = 0; i < fileInputs.length; i++) {
+        fileInputs[i].addEventListener("change",
+          (event) => {
+            fileInputs[i].parentNode.parentNode.children[0].value = "Changed";
+          });
+      }
 
-            document.getElementById("submitButton").addEventListener("click", validateFileInput);
+      document.getElementById("submitButton").addEventListener("click", validateFileInput);
 
-            const fileInput = document.getElementById("newCustomFile");
-            fileInput.addEventListener('change',
-                (event) => {
-                    document.getElementById("fileValidationText").innerText = "";
-                });
-
-            function validateFileInput() {
-                if (fileInput.value === "") {
-                    document.getElementById("fileValidationText").innerText = "Image is required.";
-                }
-            }
-
-            const inputs = document.getElementsByTagName("input");
-            for (let i = 0; i < inputs.length; i++) {
-                inputs[i].addEventListener('input',
-                    (event) => {
-                        document.getElementById("notSavedWarning").hidden = false;
-                    });
-            }
+      const fileInput = document.getElementById("newCustomFile");
+      fileInput.addEventListener('change',
+        (event) => {
+          document.getElementById("fileValidationText").innerText = "";
         });
-    </script>
+
+      function validateFileInput() {
+        if (fileInput.value === "") {
+          document.getElementById("fileValidationText").innerText = "Image is required.";
+        }
+      }
+
+      const inputs = document.getElementsByTagName("input");
+      for (let i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener('input',
+          (event) => {
+            document.getElementById("notSavedWarning").hidden = false;
+          });
+      }
+    });
+  </script>
 }

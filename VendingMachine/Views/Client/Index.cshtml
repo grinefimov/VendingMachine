@@ -2,7 +2,7 @@
 @model VendingMachine.Models.VendingMachineModel
 
 @{
-    ViewData["Title"] = "Vending Machine";
+  ViewData["Title"] = "Vending Machine";
 }
 
 <h1 class="text-center mb-3">Vending Machine</h1>
@@ -11,216 +11,216 @@
 
 @* Product cards *@
 @{
-    int quantity = 0;
-    foreach (var product in Model.Products)
-    {
-        quantity += product.Quantity;
-    }
+  int quantity = 0;
+  foreach (var product in Model.Products)
+  {
+    quantity += product.Quantity;
+  }
 }
 @if (quantity == 0)
 {
-    <h2 class="text-center my-5">Empty</h2>
+  <h2 class="text-center my-5">Empty</h2>
 }
 else
 {
-    <div class="row justify-content-center">
-        @for (int i = 0; i < Model.Products.Count; i++)
-        {
-            @if (Model.Products[i].Quantity > 0)
-             {
-                 <div class="col-sm-4 col-md-3 col-lg-2 mb-3">
-                     <div class="card" name="productCard">
-                         <img src="@Model.Products[i].ImageUrl" asp-append-version="true" alt="@Model.Products[i].ImageUrl" class="card-img-top"/>
-                         <div class="card-footer py-2 px-3">
-                             <p class="mb-0">@Model.Products[i].Name</p>
-                             <p class="text-right font-italic mb-0">
-                                 @Model.Products[i].Price rub
-                             </p>
-                         </div>
-                     </div>
-                 </div>
-             }
-        }
-    </div>
+  <div class="row justify-content-center">
+    @for (int i = 0; i < Model.Products.Count; i++)
+    {
+      @if (Model.Products[i].Quantity > 0)
+       {
+         <div class="col-sm-4 col-md-3 col-lg-2 mb-3">
+           <div class="card" name="productCard">
+             <img src="@Model.Products[i].ImageUrl" asp-append-version="true" alt="@Model.Products[i].ImageUrl" class="card-img-top"/>
+             <div class="card-footer py-2 px-3">
+               <p class="mb-0">@Model.Products[i].Name</p>
+               <p class="text-right font-italic mb-0">
+                 @Model.Products[i].Price rub
+               </p>
+             </div>
+           </div>
+         </div>
+       }
+    }
+  </div>
 }
 
 @* Checkout, Total, Balance, Change, Buy button *@
 <div class="row justify-content-center mb-5">
-    <div class="col-sm-5 col-lg-3">
-        <div>Checkout:</div>
-        <div id="checkout" class="mb-2"></div>
-        <div class="row font-weight-bold">
-            <div class="col">Total:</div>
-            <div class="col font-italic text-right" id="total">0 rub</div>
-        </div>
+  <div class="col-sm-5 col-lg-3">
+    <div>Checkout:</div>
+    <div id="checkout" class="mb-2"></div>
+    <div class="row font-weight-bold">
+      <div class="col">Total:</div>
+      <div class="col font-italic text-right" id="total">0 rub</div>
     </div>
-    <div class="col-sm-1"></div>
-    <div class="col-auto align-self-end">
-        <div class="row font-weight-bold mb-2">
-            <div class="col">Balance:</div>
-            <div class="col font-italic text-right" id="balance">0 rub</div>
-        </div>
-        <div class="row mb-3">
-            <div class="col">Change:</div>
-            <div class="col font-italic text-right" id="change">0 rub</div>
-        </div>
-        <button id="buyButton" class="btn btn-primary btn-lg px-5">Buy</button>
+  </div>
+  <div class="col-sm-1"></div>
+  <div class="col-auto align-self-end">
+    <div class="row font-weight-bold mb-2">
+      <div class="col">Balance:</div>
+      <div class="col font-italic text-right" id="balance">0 rub</div>
     </div>
+    <div class="row mb-3">
+      <div class="col">Change:</div>
+      <div class="col font-italic text-right" id="change">0 rub</div>
+    </div>
+    <button id="buyButton" class="btn btn-primary btn-lg px-5">Buy</button>
+  </div>
 </div>
 
 @* Cashes *@
 <div class="row justify-content-center">
-    @for (int i = 0; i < Model.Cashes.Count; i++)
-    {
-        <div class="col-auto mb-3">
-            <button name="cashButton" disabled="@Model.Cashes[i].IsBlocked" class="btn btn-primary btn-lg py-3 px-4">@Model.Cashes[i].FaceValue</button>
-        </div>
-    }
+  @for (int i = 0; i < Model.Cashes.Count; i++)
+  {
+    <div class="col-auto mb-3">
+      <button name="cashButton" disabled="@Model.Cashes[i].IsBlocked" class="btn btn-primary btn-lg py-3 px-4">@Model.Cashes[i].FaceValue</button>
+    </div>
+  }
 </div>
 
 @* Message modal *@
 <button hidden="hidden" id="messageModalButton" type="button" data-toggle="modal" data-target="#messageModal"></button>
 <div id="messageModal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <h5 id="modalMessage" class="mt-4 mb-5"></h5>
-                <div>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
-                </div>
-            </div>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <h5 id="modalMessage" class="mt-4 mb-5"></h5>
+        <div>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 
 @section Scripts {
-    <script>
-        $(document).ready(function() {
-            const products = [];
-            const cashes = [];
-            const checkout = [];
-            const total = {
-                value: 0,
-                get get() { return this.value; },
-                set set(value) {
-                    this.value = value;
-                    document.getElementById("total").innerText = value + " rub";
-                    change.updateValue();
+  <script>
+    $(document).ready(function() {
+      const products = [];
+      const cashes = [];
+      const checkout = [];
+      const total = {
+        value: 0,
+        get get() { return this.value; },
+        set set(value) {
+          this.value = value;
+          document.getElementById("total").innerText = value + " rub";
+          change.updateValue();
+        }
+      };
+      const balance = {
+        value: 0,
+        get get() { return this.value; },
+        set set(value) {
+          this.value = value;
+          document.getElementById("balance").innerText = value + " rub";
+          change.updateValue();
+        }
+      };
+      const change = {
+        value: 0,
+        get get() { return this.value; },
+        set set(value) {
+          this.value = value;
+          document.getElementById("change").innerText = value + " rub";
+        },
+        updateValue: function() {
+          this.set = balance.get - total.get;
+        }
+      };
+      const newCashIds = [];
+      const cards = document.getElementsByName("productCard");
+      const cashButtons = document.getElementsByName("cashButton");
+      const buyButton = document.getElementById("buyButton");
+      const checkoutDiv = document.getElementById("checkout");
+
+      @foreach (var product in Model.Products)
+      {
+        <text>
+          products.push({
+            id: @product.Id,
+            name: "@product.Name",
+            price: @product.Price,
+            quantity: @product.Quantity,
+            imageUrl: "@product.ImageUrl"
+          });
+        </text>
+      }
+      @foreach (var cash in Model.Cashes)
+      {
+        <text>
+          cashes.push({
+            id: @cash.Id,
+            faceValue: @cash.FaceValue,
+            quantity: @cash.Quantity,
+          });
+        </text>
+      }
+
+      for (let i = 0; i < cards.length; i++) {
+        cards[i].addEventListener("click",
+          (event) => {
+            if (products[i].quantity > 0) {
+              if (total.get + products[i].price <= balance.get) {
+                products[i].quantity -= 1;
+                total.set = total.get + products[i].price;
+                checkout.push(products[i]);
+
+                const div = document.createElement("div");
+                div.innerHTML = `
+                  <div class="row">
+                    <div class="col">${products[i].name}</div>
+                    <div class="col font-italic text-right">${products[i].price} rub</div>
+                  </div>`;
+                checkoutDiv.appendChild(div);
+              } else {
+                modalAlert("Deposit money!");
+              }
+            } else {
+              modalAlert("Sold out!");
+            }
+          });
+      }
+      for (let i = 0; i < cashButtons.length; i++) {
+        cashButtons[i].addEventListener("click",
+          (event) => {
+            newCashIds.push(cashes[i].id);
+            balance.set = balance.get + cashes[i].faceValue;
+          });
+      }
+
+      function modalAlert(message) {
+        document.getElementById("modalMessage").innerText = message;
+        document.getElementById("messageModalButton").click();
+      }
+
+      buyButton.addEventListener("click",
+        (event) => {
+          if (checkout.length || balance.get > 0) {
+            $.ajax({
+              url: "@Url.Action("Buy")",
+              data: { checkout: checkout, newCashIds: newCashIds, change: change.get },
+              type: "POST",
+              success: function(data) {
+                newCashIds.length = 0;
+                checkout.length = 0;
+                checkoutDiv.innerText = "";
+                total.set = 0;
+                balance.set = 0;
+                change.set = 0;
+                let noCashLeftMessage = "";
+                if (data.noCashLeft) {
+                  noCashLeftMessage = " No Cash Left";
                 }
-            };
-            const balance = {
-                value: 0,
-                get get() { return this.value; },
-                set set(value) {
-                    this.value = value;
-                    document.getElementById("balance").innerText = value + " rub";
-                    change.updateValue();
-                }
-            };
-            const change = {
-                value: 0,
-                get get() { return this.value; },
-                set set(value) {
-                    this.value = value;
-                    document.getElementById("change").innerText = value + " rub";
-                },
-                updateValue: function() {
-                    this.set = balance.get - total.get;
-                }
-            };
-            const newCashIds = [];
-            const cards = document.getElementsByName("productCard");
-            const cashButtons = document.getElementsByName("cashButton");
-            const buyButton = document.getElementById("buyButton");
-            const checkoutDiv = document.getElementById("checkout");
-
-            @foreach (var product in Model.Products)
-            {
-                <text>
-                    products.push({
-                        id: @product.Id,
-                        name: "@product.Name",
-                        price: @product.Price,
-                        quantity: @product.Quantity,
-                        imageUrl: "@product.ImageUrl"
-                    });
-                </text>
-            }
-            @foreach (var cash in Model.Cashes)
-            {
-                <text>
-                    cashes.push({
-                        id: @cash.Id,
-                        faceValue: @cash.FaceValue,
-                        quantity: @cash.Quantity,
-                    });
-                </text>
-            }
-
-            for (let i = 0; i < cards.length; i++) {
-                cards[i].addEventListener("click",
-                    (event) => {
-                        if (products[i].quantity > 0) {
-                            if (total.get + products[i].price <= balance.get) {
-                                products[i].quantity -= 1;
-                                total.set = total.get + products[i].price;
-                                checkout.push(products[i]);
-
-                                const div = document.createElement("div");
-                                div.innerHTML =
-                                    `<div class="row">
-                                        <div class="col">${products[i].name}</div>
-                                        <div class="col font-italic text-right">${products[i].price} rub</div>
-                                    </div>`;
-                                checkoutDiv.appendChild(div);
-                            } else {
-                                modalAlert("Deposit money!");
-                            }
-                        } else {
-                            modalAlert("Sold out!");
-                        }
-                    });
-            }
-            for (let i = 0; i < cashButtons.length; i++) {
-                cashButtons[i].addEventListener("click",
-                    (event) => {
-                        newCashIds.push(cashes[i].id);
-                        balance.set = balance.get + cashes[i].faceValue;
-                    });
-            }
-
-            function modalAlert(message) {
-                document.getElementById("modalMessage").innerText = message;
-                document.getElementById("messageModalButton").click();
-            }
-
-            buyButton.addEventListener("click",
-                (event) => {
-                    if (checkout.length || balance.get > 0) {
-                        $.ajax({
-                            url: "@Url.Action("Buy")",
-                            data: { checkout: checkout, newCashIds: newCashIds, change: change.get },
-                            type: "POST",
-                            success: function(data) {
-                                newCashIds.length = 0;
-                                checkout.length = 0;
-                                checkoutDiv.innerText = "";
-                                total.set = 0;
-                                balance.set = 0;
-                                change.set = 0;
-                                let noCashLeftMessage = "";
-                                if (data.noCashLeft) {
-                                    noCashLeftMessage = " No Cash Left";
-                                }
-                                modalAlert(`Your change: ${data.change} rub (Cashes: ${data.changeCashes}${noCashLeftMessage})`);
-                            },
-                            error: function() {
-                                throw "AJAX error";
-                            }
-                        });
-                    }
-                });
+                modalAlert(`Your change: ${data.change} rub (Cashes: ${data.changeCashes}${noCashLeftMessage})`);
+              },
+              error: function() {
+                throw "AJAX error";
+              }
+            });
+          }
         });
-    </script>
+    });
+  </script>
 }
