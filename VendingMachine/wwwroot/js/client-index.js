@@ -1,70 +1,76 @@
-﻿$(document).ready(function() {
-  const products = [];
-  const cashes = [];
-  const checkout = [];
-  const total = {
-    value: 0,
-    get get() { return this.value; },
-    set set(value) {
-      this.value = value;
-      document.getElementById("total").innerText = value + " rub";
-      change.updateValue();
+﻿"use strict";
+
+const products = [];
+const cashes = [];
+
+$.ajax({
+  url: '/Client/GetData',
+  type: 'GET',
+  success: function (response) {
+    for (let i = 0; i < response.products.length; i++) {
+      products.push({
+        id: response.products[i].id,
+        name: response.products[i].name,
+        price: response.products[i].price,
+        quantity: response.products[i].quantity,
+        imageUrl: response.products[i].imageUrl
+      });
     }
-  };
-  const balance = {
-    value: 0,
-    get get() { return this.value; },
-    set set(value) {
-      this.value = value;
-      document.getElementById("balance").innerText = value + " rub";
-      change.updateValue();
+    for (let i = 0; i < response.cashes.length; i++) {
+      cashes.push({
+        id: response.cashes[i].id,
+        faceValue: response.cashes[i].faceValue,
+        quantity: response.cashes[i].quantity
+      });
     }
-  };
-  const change = {
-    value: 0,
-    get get() { return this.value; },
-    set set(value) {
-      this.value = value;
-      document.getElementById("change").innerText = value + " rub";
-    },
-    updateValue: function() {
-      this.set = balance.get - total.get;
-    }
-  };
-  const newCashIds = [];
-  const cards = document.getElementsByName("productCard");
+  },
+  error: function () {
+    throw "AJAX error";
+  }
+});
+
+const checkout = [];
+const total = {
+  value: 0,
+  get get() { return this.value; },
+  set set(value) {
+    this.value = value;
+    document.getElementById("total").innerText = value + " rub";
+    change.updateValue();
+  }
+};
+const balance = {
+  value: 0,
+  get get() { return this.value; },
+  set set(value) {
+    this.value = value;
+    document.getElementById("balance").innerText = value + " rub";
+    change.updateValue();
+  }
+};
+const change = {
+  value: 0,
+  get get() { return this.value; },
+  set set(value) {
+    this.value = value;
+    document.getElementById("change").innerText = value + " rub";
+  },
+  updateValue: function () {
+    this.set = balance.get - total.get;
+  }
+};
+const newCashIds = [];
+
+$(document).ready(function () {
+  const productCards = document.getElementsByName("productCard");
   const cashButtons = document.getElementsByName("cashButton");
   const buyButton = document.getElementById("buyButton");
   const checkoutDiv = document.getElementById("checkout");
+  const modalMessage = document.getElementById("modalMessage");
+  const messageModalButton = document.getElementById("messageModalButton");
 
-  $.ajax({
-    url: '/Client/GetData',
-    type: 'GET',
-    success: function(response) {
-      for (let i = 0; i < response.products.length; i++) {
-        products.push({
-          id: response.products[i].id,
-          name: response.products[i].name,
-          price: response.products[i].price,
-          quantity: response.products[i].quantity,
-          imageUrl: response.products[i].imageUrl
-        });
-      }
-      for (let i = 0; i < response.cashes.length; i++) {
-        cashes.push({
-          id: response.cashes[i].id,
-          faceValue: response.cashes[i].faceValue,
-          quantity: response.cashes[i].quantity
-        });
-      }
-    },
-    error: function() {
-      throw "AJAX error";
-    }
-  });
-
-  for (let i = 0; i < cards.length; i++) {
-    cards[i].addEventListener("click",
+  for (let i = 0; i < productCards.length; i++) {
+    productCards[i].addEventListener("click",
       (event) => {
         if (products[i].quantity > 0) {
           if (total.get + products[i].price <= balance.get) {
@@ -87,6 +93,7 @@
         }
       });
   }
+
   for (let i = 0; i < cashButtons.length; i++) {
     cashButtons[i].addEventListener("click",
       (event) => {
@@ -96,8 +103,8 @@
   }
 
   function modalAlert(message) {
-    document.getElementById("modalMessage").innerText = message;
-    document.getElementById("messageModalButton").click();
+    modalMessage.innerText = message;
+    messageModalButton.click();
   }
 
   buyButton.addEventListener("click",

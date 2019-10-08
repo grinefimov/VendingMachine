@@ -12,7 +12,7 @@ namespace VendingMachine
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }

@@ -127,7 +127,7 @@ namespace VendingMachine.Controllers
             return RedirectToAction(nameof(Panel), new {key = _secretKey});
         }
 
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddProduct(AdminPanelModel model, IFormFile file)
         {
@@ -152,7 +152,7 @@ namespace VendingMachine.Controllers
             return RedirectToAction(nameof(Panel), new {key = _secretKey});
         }
 
-        [HttpPost]
+        [HttpDelete("{id}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProduct(int id)
         {

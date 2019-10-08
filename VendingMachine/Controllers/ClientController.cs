@@ -54,11 +54,14 @@ namespace VendingMachine.Controllers
 
             foreach (var product in products)
             {
-                foreach (var buy in checkout)
+                if (product.Quantity > 0)
                 {
-                    if (product.Id == buy.Id)
+                    foreach (var buy in checkout)
                     {
-                        product.Quantity--;
+                        if (product.Id == buy.Id)
+                        {
+                            product.Quantity--;
+                        }
                     }
                 }
             }

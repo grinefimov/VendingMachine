@@ -1,4 +1,6 @@
-﻿$(document).ready(function() {
+﻿"use strict";
+
+$(document).ready(function () {
   bsCustomFileInput.init();
 
   const fileInputs = document.getElementsByName("files");
