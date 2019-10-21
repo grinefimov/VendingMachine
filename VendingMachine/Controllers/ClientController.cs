@@ -11,22 +11,19 @@ namespace VendingMachine.Controllers
 {
     public class ClientController : Controller
     {
-        private readonly ProductContext _productContext;
-        private readonly CashContext _cashContext;
+        private readonly VendingMachineContext _context;
 
-        public ClientController(ProductContext productContext,
-            CashContext cashContext)
+        public ClientController(VendingMachineContext context)
         {
-            _productContext = productContext;
-            _cashContext = cashContext;
+            _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
             var model = new VendingMachineModel()
             {
-                Products = await _productContext.Products.ToListAsync(),
-                Cashes = await _cashContext.Cashes.ToListAsync()
+                Products = await _context.Products.ToListAsync(),
+                Cashes = await _context.Cashes.ToListAsync()
             };
 
             return View(model);
@@ -34,8 +31,8 @@ namespace VendingMachine.Controllers
 
         public async Task<IActionResult> GetData()
         {
-            var products = await _productContext.Products.ToListAsync();
-            var cashes = await _cashContext.Cashes.ToListAsync();
+            var products = await _context.Products.ToListAsync();
+            var cashes = await _context.Cashes.ToListAsync();
 
             return Json(new { products, cashes });
         }
@@ -49,8 +46,8 @@ namespace VendingMachine.Controllers
         [HttpPost]
         public async Task<IActionResult> Buy(List<Product> checkout, List<int> newCashIds, float change)
         {
-            var products = await _productContext.Products.ToListAsync();
-            var cashes = await _cashContext.Cashes.OrderByDescending(c => c.FaceValue).ToListAsync();
+            var products = await _context.Products.ToListAsync();
+            var cashes = await _context.Cashes.OrderByDescending(c => c.FaceValue).ToListAsync();
 
             foreach (var product in products)
             {
@@ -95,8 +92,8 @@ namespace VendingMachine.Controllers
             {
                 try
                 {
-                    _productContext.Update(product);
-                    await _productContext.SaveChangesAsync();
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -115,8 +112,8 @@ namespace VendingMachine.Controllers
             {
                 try
                 {
-                    _cashContext.Update(cash);
-                    await _cashContext.SaveChangesAsync();
+                    _context.Update(cash);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -136,12 +133,12 @@ namespace VendingMachine.Controllers
 
         private bool ProductExists(int id)
         {
-            return _productContext.Products.Any(e => e.Id == id);
+            return _context.Products.Any(e => e.Id == id);
         }
 
         private bool CashExists(int id)
         {
-            return _cashContext.Cashes.Any(e => e.Id == id);
+            return _context.Cashes.Any(e => e.Id == id);
         }
     }
 }

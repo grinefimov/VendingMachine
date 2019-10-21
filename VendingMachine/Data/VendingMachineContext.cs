@@ -3,13 +3,14 @@ using VendingMachine.Models;
 
 namespace VendingMachine.Data
 {
-    public class ProductContext : DbContext
+    public class VendingMachineContext : DbContext
     {
-        public ProductContext(DbContextOptions<ProductContext> options)
+        public VendingMachineContext(DbContextOptions<VendingMachineContext> options)
             : base(options)
         {
         }
 
+        public DbSet<Cash> Cashes { get; set; }
         public DbSet<Product> Products { get; set; }
     }
 }

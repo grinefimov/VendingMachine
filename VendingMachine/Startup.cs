@@ -26,9 +26,7 @@ namespace VendingMachine
             var path = Path.Combine(Directory.GetCurrentDirectory(), "App_Data");
             var vendingMachineConnectionString = Configuration.GetConnectionString("VendingMachine").Replace("|DataDirectory|", path);
 
-            services.AddDbContext<ProductContext>(options =>
-                options.UseSqlServer(vendingMachineConnectionString));
-            services.AddDbContext<CashContext>(options =>
+            services.AddDbContext<VendingMachineContext>(options =>
                 options.UseSqlServer(vendingMachineConnectionString));
         }
 

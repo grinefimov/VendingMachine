@@ -15,14 +15,12 @@ namespace VendingMachine.Controllers
     public class AdminController : Controller
     {
         private readonly string _secretKey = "SecretKey";
-        private readonly ProductContext _productContext;
-        private readonly CashContext _cashContext;
+        private readonly VendingMachineContext _context;
         private readonly IHostEnvironment _hostingEnvironment;
 
-        public AdminController(ProductContext productContext, CashContext cashContext, IHostEnvironment env)
+        public AdminController(VendingMachineContext context, IHostEnvironment env)
         {
-            _productContext = productContext;
-            _cashContext = cashContext;
+            _context = context;
             _hostingEnvironment = env;
         }
 
@@ -32,8 +30,8 @@ namespace VendingMachine.Controllers
             {
                 var model = new AdminPanelModel()
                 {
-                    Products = await _productContext.Products.ToListAsync(),
-                    Cashes = await _cashContext.Cashes.ToListAsync()
+                    Products = await _context.Products.ToListAsync(),
+                    Cashes = await _context.Cashes.ToListAsync()
                 };
 
                 return View(model);
@@ -83,8 +81,8 @@ namespace VendingMachine.Controllers
                     {
                         try
                         {
-                            _productContext.Update(product);
-                            await _productContext.SaveChangesAsync();
+                            _context.Update(product);
+                            await _context.SaveChangesAsync();
                         }
                         catch (DbUpdateConcurrencyException)
                         {
@@ -106,8 +104,8 @@ namespace VendingMachine.Controllers
                     {
                         try
                         {
-                            _cashContext.Update(cash);
-                            await _cashContext.SaveChangesAsync();
+                            _context.Update(cash);
+                            await _context.SaveChangesAsync();
                         }
                         catch (DbUpdateConcurrencyException)
                         {
@@ -146,8 +144,8 @@ namespace VendingMachine.Controllers
                 model.NewProduct.ImageUrl = @"/images/" + newFilename;
             }
 
-            _productContext.Add(model.NewProduct);
-            await _productContext.SaveChangesAsync();
+            _context.Add(model.NewProduct);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Panel), new {key = _secretKey});
         }
@@ -156,9 +154,9 @@ namespace VendingMachine.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _productContext.Products.FindAsync(id);
-            _productContext.Products.Remove(product);
-            await _productContext.SaveChangesAsync();
+            var product = await _context.Products.FindAsync(id);
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
             var path = Path.Combine("", _hostingEnvironment.ContentRootPath + @"/wwwroot/" + product.ImageUrl);
             if (System.IO.File.Exists(path))
             {
@@ -170,12 +168,12 @@ namespace VendingMachine.Controllers
 
         private bool ProductExists(int id)
         {
-            return _productContext.Products.Any(e => e.Id == id);
+            return _context.Products.Any(e => e.Id == id);
         }
 
         private bool CashExists(int id)
         {
-            return _cashContext.Cashes.Any(e => e.Id == id);
+            return _context.Cashes.Any(e => e.Id == id);
         }
     }
 }
