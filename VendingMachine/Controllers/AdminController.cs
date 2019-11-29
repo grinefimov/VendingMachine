@@ -51,19 +51,18 @@ namespace VendingMachine.Controllers
                     var fileNumber = 0;
                     foreach (var product in model.Products)
                     {
-                        if (product.ImageUrl == "Changed")
+                        if (new string(product.ImageUrl.ToCharArray()[..10]) == "(Changed) ")
                         {
                             if (files[fileNumber] != null)
                             {
                                 var deletePath = Path.Combine("",
-                                    _hostingEnvironment.ContentRootPath + @"/wwwroot/" + product.ImageUrl);
+                                    _hostingEnvironment.ContentRootPath + @"/wwwroot/" + new string(product.ImageUrl.ToCharArray()[10..]));
                                 if (System.IO.File.Exists(deletePath))
                                 {
                                     System.IO.File.Delete(deletePath);
                                 }
 
-                                var fileInfo = new FileInfo(files[fileNumber].FileName);
-                                var newFilename = product.Name + fileInfo.Extension;
+                                var newFilename = CreateFileName(product.Name, files[fileNumber].FileName);
                                 var path = Path.Combine("",
                                     _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
                                 await using (var stream = new FileStream(path, FileMode.Create))
@@ -131,10 +130,7 @@ namespace VendingMachine.Controllers
         {
             if (file != null)
             {
-                var fileInfo = new FileInfo(file.FileName);
-                var now = DateTime.Now;
-                string time = " " + now.Day + "-" + now.Month + "-" + now.Year + " " + now.Hour + "-" + now.Minute;
-                var newFilename = model.NewProduct.Name + time + fileInfo.Extension;
+                var newFilename = CreateFileName(model.NewProduct.Name, file.FileName);
                 var path = Path.Combine("", _hostingEnvironment.ContentRootPath + @"\wwwroot\images\" + newFilename);
                 await using (var stream = new FileStream(path, FileMode.Create))
                 {
@@ -174,6 +170,14 @@ namespace VendingMachine.Controllers
         private bool CashExists(int id)
         {
             return _context.Cashes.Any(e => e.Id == id);
+        }
+
+        private static string CreateFileName(string name, string fileName)
+        {
+            var fileInfo = new FileInfo(fileName);
+            var now = DateTime.Now;
+            var time = " " + now.Day + "-" + now.Month + "-" + now.Year + " " + now.Hour + "-" + now.Minute;
+            return name + time + fileInfo.Extension;
         }
     }
 }

@@ -7,14 +7,17 @@ $(document).ready(function () {
   for (let i = 0; i < fileInputs.length; i++) {
     fileInputs[i].addEventListener("change",
       (event) => {
-        fileInputs[i].parentNode.parentNode.children[0].value = "Changed";
+        const value = fileInputs[i].parentNode.parentNode.children[0].value;
+        if (value.substr(0, 10) !== "(Changed) ") {
+          fileInputs[i].parentNode.parentNode.children[0].value = `(Changed) ${value}`;
+        }
       });
   }
 
   document.getElementById("submitButton").addEventListener("click", validateFileInput);
 
   const fileInput = document.getElementById("newCustomFile");
-  fileInput.addEventListener('change',
+  fileInput.addEventListener("change",
     (event) => {
       document.getElementById("fileValidationText").innerText = "";
     });
@@ -27,7 +30,7 @@ $(document).ready(function () {
 
   const inputs = document.getElementsByTagName("input");
   for (let i = 0; i < inputs.length; i++) {
-    inputs[i].addEventListener('input',
+    inputs[i].addEventListener("input",
       (event) => {
         document.getElementById("notSavedWarning").hidden = false;
       });
